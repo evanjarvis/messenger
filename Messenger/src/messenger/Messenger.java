@@ -17,7 +17,6 @@ public class Messenger {
         //create window
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
-        messengerGUI.showGUI();
     }
     
 }
