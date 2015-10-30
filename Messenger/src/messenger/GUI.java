@@ -1,6 +1,7 @@
 package messenger;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -10,7 +11,7 @@ import javax.swing.border.*;
  */
 public class GUI {
     /**
-     * Create and display a frame containing a text field and send button.
+     * Create and display the main frame for the messenger program.
      */
     protected void showGUI(){
         final int TEXT_FIELD_WIDTH = 25;
@@ -69,6 +70,28 @@ public class GUI {
         JButton registerButton = new JButton("Register");
         JButton guestButton = new JButton("Contine as Guest");
         
+        //set button actions
+        loginButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                //TO DO: Code login logic here
+            }
+        });
+        registerButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                //open registeration window
+                showRegistrationFrame();
+            }
+        });
+        guestButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                //start guest sesssion
+                //TODO add code here
+            }
+        });       
+        
         //layout
         innerLoginPane.add(usernameLabel);
         innerLoginPane.add(usernameField);
@@ -106,9 +129,19 @@ public class GUI {
             label.setLabelFor(textField);
             formPanel.add(textField);
         }
+        //make the signup button
+        JButton registerButton = new JButton("Sign Up");
+        registerButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                //TODO code registration logic here
+            }
+        });
+        formPanel.add(registerButton);
         
-        JFrame registrationFrame = new JFrame();
+        JFrame registrationFrame = new JFrame("Register");
         registrationFrame.add(formPanel);
+        registrationFrame.setResizable(false);
         registrationFrame.pack();
         registrationFrame.setVisible(true);
     }
