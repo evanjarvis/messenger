@@ -2,11 +2,12 @@ package messenger;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.border.*;
 
 /**
- * Displays GUI screens for messenger application.
+ * GUI manager for messenger application.
  * @author Me
  */
 public class GUI {
@@ -61,7 +62,7 @@ public class GUI {
         JLabel usernameLabel = new JLabel("Username:");
         JLabel passwordLabel = new JLabel("Password:");
         JTextField usernameField = new JTextField(LABEL_WIDTH);
-        JPasswordField passwordField = new JPasswordField(TEXT_FIELD_WIDTH);
+        final JPasswordField passwordField = new JPasswordField(TEXT_FIELD_WIDTH);
         usernameLabel.setLabelFor(usernameField);
         passwordLabel.setLabelFor(passwordField);
         
@@ -73,8 +74,13 @@ public class GUI {
         //set button actions
         loginButton.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent event){
-                //TO DO: Code login logic here
+            //TO DO: Code login logic here
+            public void actionPerformed(ActionEvent e) {
+                char[] input = passwordField.getPassword();
+                //validate password
+                //Zero out the possible password, for security.
+                Arrays.fill(input, '0');
+                //passwordField.selectAll();
             }
         });
         registerButton.addActionListener(new ActionListener(){
@@ -112,29 +118,45 @@ public class GUI {
         frame.setResizable(false);
         frame.setVisible(true);
     }
+    
     /**
      * Display the screen for registering a new user.
      */
     protected void showRegistrationFrame(){
         int LABEL_WIDTH = 10;
         int TEXT_FIELD_WIDTH = 20;
-        String[] labels = {"Name:", "Username:", "Create Password:", "Confirm Password:"};
                 
-        JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        final JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         
-        for(int i = 0; i < labels.length; i ++){
-            JLabel label = new JLabel(labels[i]);
-            formPanel.add(label);
-            JTextField textField = new JTextField(TEXT_FIELD_WIDTH);
-            label.setLabelFor(textField);
-            formPanel.add(textField);
-        }
+        //make the registration 
+        JLabel n = new JLabel("Name:");
+        JTextField name = new JTextField(TEXT_FIELD_WIDTH);
+        n.setLabelFor(name);
+        formPanel.add(n); formPanel.add(name);
+        JLabel u = new JLabel("Username:");
+        JTextField username = new JTextField(TEXT_FIELD_WIDTH);
+        u.setLabelFor(username);
+        formPanel.add(u); formPanel.add(username);
+        JLabel pw = new JLabel("Password:");
+        final JPasswordField password = new JPasswordField(TEXT_FIELD_WIDTH);
+        formPanel.add(pw); formPanel.add(password);
+        pw.setLabelFor(password);
+        JLabel cp = new JLabel("Confirm Password:");
+        final JPasswordField confirmPassword = new JPasswordField(TEXT_FIELD_WIDTH);
+        cp.setLabelFor(confirmPassword);
+        formPanel.add(cp); formPanel.add(confirmPassword);
+        
         //make the signup button
         JButton registerButton = new JButton("Sign Up");
         registerButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
                 //TODO code registration logic here
+                if(Arrays.equals(password.getPassword(), confirmPassword.getPassword())){
+                    //register
+                } else {
+                    JOptionPane.showMessageDialog(formPanel, "Passwords must match.");
+                }
             }
         });
         formPanel.add(registerButton);
