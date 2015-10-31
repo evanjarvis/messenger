@@ -17,4 +17,8 @@ public class User {
         name = n;
         username = un;
     }
+    public boolean validate(){
+        //TODO: insert user validation code here
+        return false;
+    }
 }
