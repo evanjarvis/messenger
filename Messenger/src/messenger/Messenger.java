@@ -9,6 +9,9 @@ import javax.swing.*;
  * A simple messaging program.
  * @author Evan Jarvis
  */
+
+//test comment here
+
 public class Messenger {
     /**
      * @param args the command line arguments
