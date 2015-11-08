@@ -2,7 +2,10 @@ package messenger;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -126,21 +129,25 @@ public class GUI {
         int LABEL_WIDTH = 10;
         int TEXT_FIELD_WIDTH = 20;
                 
-        final JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        final JPanel formPanel = new JPanel(new GridLayout(0, 2, 6, 6));
         
         //make the registration 
-        JLabel n = new JLabel("Name:");
-        JTextField name = new JTextField(TEXT_FIELD_WIDTH);
-        n.setLabelFor(name);
-        formPanel.add(n); formPanel.add(name);
+        JLabel fn = new JLabel("First Name:");
+        final JTextField firstName = new JTextField(TEXT_FIELD_WIDTH);
+        fn.setLabelFor(firstName);
+        formPanel.add(fn); formPanel.add(firstName);
+        JLabel ln = new JLabel("Last Name:");
+        final JTextField lastName = new JTextField(TEXT_FIELD_WIDTH);
+        ln.setLabelFor(lastName);
+        formPanel.add(ln); formPanel.add(lastName);
         JLabel u = new JLabel("Username:");
-        JTextField username = new JTextField(TEXT_FIELD_WIDTH);
+        final JTextField username = new JTextField(TEXT_FIELD_WIDTH);
         u.setLabelFor(username);
         formPanel.add(u); formPanel.add(username);
         JLabel pw = new JLabel("Password:");
         final JPasswordField password = new JPasswordField(TEXT_FIELD_WIDTH);
-        formPanel.add(pw); formPanel.add(password);
         pw.setLabelFor(password);
+        formPanel.add(pw); formPanel.add(password);
         JLabel cp = new JLabel("Confirm Password:");
         final JPasswordField confirmPassword = new JPasswordField(TEXT_FIELD_WIDTH);
         cp.setLabelFor(confirmPassword);
@@ -151,9 +158,15 @@ public class GUI {
         registerButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
-                //TODO code registration logic here
                 if(Arrays.equals(password.getPassword(), confirmPassword.getPassword())){
                     //register
+                    User newUser = new User(firstName.getText(), lastName.getText(), username.getText(), confirmPassword.getPassword());
+                    try {
+                        newUser.Register();
+                        JOptionPane.showMessageDialog(formPanel, "Registration Successful!");
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(formPanel, "Registration error.");
+                    }
                 } else {
                     JOptionPane.showMessageDialog(formPanel, "Passwords must match.");
                 }
