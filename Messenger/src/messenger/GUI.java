@@ -1,23 +1,29 @@
 package messenger;
 
 import java.awt.*;
+import static java.awt.PageAttributes.ColorType.COLOR;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import java.awt.Font;
 import javax.swing.border.*;
 
 /**
  * GUI manager for messenger application.
  * @author Me
  */
-public class GUI {
+public class GUI extends JFrame {
     /**
      * Create and display the main frame for the messenger program.
      */
     protected void showGUI(){
+        // Reads Image From File
+        setLayout(new BorderLayout());
+	JLabel background=new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBPoly.jpg"));
+       
         final int TEXT_FIELD_WIDTH = 25;
         
         final JPanel topPanel = new JPanel();
@@ -27,6 +33,50 @@ public class GUI {
         messageField.setEditable(false);
         JScrollPane scroller = new JScrollPane(messageField);
         topPanel.add(messageField, BorderLayout.CENTER);
+        topPanel.setBackground(new Color(0xA7B23C));
+        
+        // Add image to background
+        topPanel.add(background);
+	background.setLayout(new FlowLayout());
+        
+        final JPanel bottomPanel = new JPanel();
+        bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        bottomPanel.setLayout(new BorderLayout());
+        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
+        bottomPanel.add(entryField, BorderLayout.WEST);
+        JButton sendButton = new JButton("Send");
+        bottomPanel.add(sendButton, BorderLayout.EAST);
+        bottomPanel.setBackground(new Color(0x609EAA));
+        
+        JFrame frame = new JFrame("Messenger App");
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+    /**
+     * Creates Guest interface
+     */
+    protected void showGuestGUI(){
+        // Reads Image From File
+        setLayout(new BorderLayout());
+	JLabel background=new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBSmall.jpg"));
+       
+        final int TEXT_FIELD_WIDTH = 25;
+        
+        final JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+        topPanel.add(new JLabel("Messages:"), BorderLayout.NORTH);
+        JTextArea messageField = new JTextArea(10, 25);
+        messageField.setEditable(false);
+        JScrollPane scroller = new JScrollPane(messageField);
+        topPanel.add(messageField, BorderLayout.CENTER);
+        
+        
+        // Add image to background
+        topPanel.add(background);
+	background.setLayout(new FlowLayout());
         
         final JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -64,7 +114,7 @@ public class GUI {
         //setup username and password fields
         JLabel usernameLabel = new JLabel("Username:");
         JLabel passwordLabel = new JLabel("Password:");
-        JTextField usernameField = new JTextField(LABEL_WIDTH);
+        final JTextField usernameField = new JTextField(LABEL_WIDTH);
         final JPasswordField passwordField = new JPasswordField(TEXT_FIELD_WIDTH);
         usernameLabel.setLabelFor(usernameField);
         passwordLabel.setLabelFor(passwordField);
@@ -80,6 +130,11 @@ public class GUI {
             //TO DO: Code login logic here
             public void actionPerformed(ActionEvent e) {
                 char[] input = passwordField.getPassword();
+                //System.out.println("Test Password Username Login " + input);
+                
+                String inputUserName = usernameField.getText();
+                //System.out.println("Test UserName Login " + inputUserName);
+               
                 //validate password
                 //Zero out the possible password, for security.
                 Arrays.fill(input, '0');
@@ -96,10 +151,12 @@ public class GUI {
         guestButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
+                showGuestGUI();
+                
                 //start guest sesssion
                 //TODO add code here
             }
-        });       
+        });     
         
         //layout
         innerLoginPane.add(usernameLabel);

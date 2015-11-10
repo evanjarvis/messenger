@@ -17,10 +17,9 @@ public class Messenger {
         //create window
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
+        messengerGUI.showRegistrationFrame();
         messengerGUI.showGUI();
     }
     
 }
-// Testing Committ
-
 

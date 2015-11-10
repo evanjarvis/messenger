@@ -8,6 +8,7 @@ import javax.swing.border.*;
  * Displays GUI screens for messenger application.
  * @author Me
  */
+
 public class GUI {
     /**
      * Create and display a frame containing a text field and send button.
@@ -67,7 +68,7 @@ public class GUI {
         //create the buttons
         JButton loginButton = new JButton("Login");
         JButton registerButton = new JButton("Register");
-        JButton guestButton = new JButton("Contine as Guest");
+        JButton guestButton = new JButton("Continue as Guest");
         
         //layout
         innerLoginPane.add(usernameLabel);
