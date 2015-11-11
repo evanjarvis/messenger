@@ -19,8 +19,8 @@ public class Messenger {
     public static void main(String[] args) {
         //create window
         GUI messengerGUI = new GUI();
-        messengerGUI.showStartupFrame();
-        messengerGUI.showGUI();
+        //messengerGUI.showStartupFrame();
+        messengerGUI.showMessengerGUI();
      
     }
     

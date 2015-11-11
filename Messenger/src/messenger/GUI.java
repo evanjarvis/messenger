@@ -16,14 +16,15 @@ import javax.swing.border.*;
  * @author Me
  */
 public class GUI extends JFrame {
+            private String message;
+
     /**
      * Create and display the main frame for the messenger program.
      */
-    protected void showGUI(){
+    protected void showMessengerGUI(){
         // Reads Image From File
         setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBPoly.jpg"));
-       
+	final JLabel background = new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBPoly.jpg"));
         final int TEXT_FIELD_WIDTH = 25;
         
         final JPanel topPanel = new JPanel();
@@ -47,12 +48,35 @@ public class GUI extends JFrame {
         JButton sendButton = new JButton("Send");
         bottomPanel.add(sendButton, BorderLayout.EAST);
         bottomPanel.setBackground(new Color(0x609EAA));
+        JButton backButton = new JButton("Back");
+        topPanel.add(backButton, BorderLayout.EAST);
         
+        backButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+            //open registeration window
+            showStartupFrame();  
+            }
+        });
+
+        
+        sendButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+            //open registeration window
+            message = entryField.getText();
+            JLabel jlabel = new JLabel(message);
+            jlabel.setFont(new Font("Helvetica",1,20));
+
+            topPanel.add(jlabel);            
+            }
+        });
         JFrame frame = new JFrame("Messenger App");
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setResizable(false);
         frame.setVisible(true);
     }
     /**
@@ -74,9 +98,11 @@ public class GUI extends JFrame {
         topPanel.add(messageField, BorderLayout.CENTER);
         
         
-        // Add image to background
+         //Add image to background
         topPanel.add(background);
 	background.setLayout(new FlowLayout());
+        
+       
         
         final JPanel bottomPanel = new JPanel();
         bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -85,6 +111,8 @@ public class GUI extends JFrame {
         bottomPanel.add(entryField, BorderLayout.WEST);
         JButton sendButton = new JButton("Send");
         bottomPanel.add(sendButton, BorderLayout.EAST);
+        
+        
         
         JFrame frame = new JFrame("Messenger App");
         frame.add(topPanel, BorderLayout.NORTH);
@@ -100,8 +128,17 @@ public class GUI extends JFrame {
         int LABEL_WIDTH = 10;
         int TEXT_FIELD_WIDTH = 20;
         
+        setLayout(new BorderLayout());
+	JLabel background=new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBSmall.jpg"));
+        
+       
+        
         //setup containers
         JPanel container = new JPanel(new GridLayout(0, 1));
+        
+        //container.add(background);
+	//background.setLayout(new FlowLayout());
+        
         JPanel loginWrapper = new JPanel(new GridLayout(0, 1));
         JPanel innerLoginPane = new JPanel(new GridLayout(0, 2, 5, 5));
         JPanel loginPane = new JPanel(new BorderLayout());
@@ -162,7 +199,7 @@ public class GUI extends JFrame {
         innerLoginPane.add(usernameLabel);
         innerLoginPane.add(usernameField);
         innerLoginPane.add(passwordLabel);
-        innerLoginPane.add(passwordField);
+        innerLoginPane.add(passwordField);                    
         loginPane.add(innerLoginPane, BorderLayout.NORTH);
         loginPane.add(loginButton);
         loginWrapper.add(loginPane);

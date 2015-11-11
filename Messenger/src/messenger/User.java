@@ -2,6 +2,9 @@ package messenger;
 
 import static java.lang.System.err;
 import java.sql.*;
+import javax.activation.DataSource;
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 /**
  *
@@ -17,6 +20,8 @@ public class User {
     private final String HOST = "jdbc:derby://localhost:1527/messenger_test";
     private final String USER = "messenger";
     private final String PASS = "test";
+    
+   
     /**
      * Constructor for a new User.
      * @param fn first name
