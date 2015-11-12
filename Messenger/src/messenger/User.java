@@ -33,7 +33,24 @@ public class User {
     public boolean validate() throws SQLException{
         //TODO: insert user validation code here
         try{
+            //establish connection
             Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+            
+            //prepare SQL statement
+            String usernameSql = "SELECT FROM MESSENGER.USERS.USERNAME(?)";
+            String passwordSql = "SELECT FROM MESSENGER.PASSWORD(?)";
+            
+            //set up PreparedStatements
+            PreparedStatement queryUsername = connection.prepareStatement(usernameSql);
+            PreparedStatement queryPassword = connection.prepareStatement(passwordSql);
+            queryUsername.setString(1, username);
+            String passwordString = new String(password);
+            queryPassword.setString(1, passwordString);
+            
+            //execute
+            
+            
+            
         } catch(SQLException err){
             System.out.println("Database connection failed");
         }
