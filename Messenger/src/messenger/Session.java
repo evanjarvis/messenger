@@ -1,19 +1,8 @@
 package messenger;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -22,46 +11,32 @@ import javax.swing.border.EmptyBorder;
  */
 public class Session extends JFrame{
     Group group;
-    private boolean guestSession;
+    private final boolean guestSession;
     User localUser;
 
     /**
+     * Default constructor starts a session with guest privileges.
+     */
+    public Session(){
+        guestSession = true;
+    }
+    /**
      * Constructor to start a new Session.
-     * @param username username of the local user
+     * @param user the local user
+     * @param guest true if the session is to be a guest session, false for a regular session
      * @throws SQLException 
      */
-    public Session(String username) throws SQLException {
-        if(username.equals("guest")){
-            guestSession = true;
-        } else {
-            guestSession = false;
-            try {
-                localUser = new User(username);
-                showGUI();
-                System.out.println("Local user is " + localUser);
-            } catch (SQLException ex) {
-               System.out.println("Not found!");
-                
-            }
-        }
+    public Session(User user) throws SQLException {
+        localUser = user;
+        guestSession = false;
     }
-    /**
-     * Add a user to the session so they can read messages.
-     * @param u the user to be added
+        /**
+     * Create and display the main frame for the messenger program.
      */
-    void addUser(User u){
-        group.addUser(u);
-    }
-    /**
-     * Save information about a session including members and recent messages.
-     */
-    void saveSession(){
-        
-    }
-    void showGUI(){
+    protected void showGUI(){
         // Reads Image From File
         setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("build/BTBPoly.jpg"));
+	JLabel background=new JLabel(new ImageIcon("inages/BTBPoly.jpg"));
        
         final int TEXT_FIELD_WIDTH = 25;
         
@@ -94,4 +69,55 @@ public class Session extends JFrame{
         frame.pack();
         frame.setVisible(true);
     }
+    /**
+     * Creates Guest interface
+     */
+    protected void showGuestGUI(){
+        // Reads Image From File
+        setLayout(new BorderLayout());
+	JLabel background=new JLabel(new ImageIcon("images/BTBSmall.jpg"));
+       
+        final int TEXT_FIELD_WIDTH = 25;
+        
+        final JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+        topPanel.add(new JLabel("Messages:"), BorderLayout.NORTH);
+        JTextArea messageField = new JTextArea(10, 25);
+        messageField.setEditable(false);
+        JScrollPane scroller = new JScrollPane(messageField);
+        topPanel.add(messageField, BorderLayout.CENTER);
+        
+        
+        // Add image to background
+        topPanel.add(background);
+	background.setLayout(new FlowLayout());
+        
+        final JPanel bottomPanel = new JPanel();
+        bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        bottomPanel.setLayout(new BorderLayout());
+        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
+        bottomPanel.add(entryField, BorderLayout.WEST);
+        JButton sendButton = new JButton("Send");
+        bottomPanel.add(sendButton, BorderLayout.EAST);
+        
+        JFrame frame = new JFrame("BTB Messenger App (Guest)");
+        frame.add(topPanel, BorderLayout.NORTH);
+        frame.add(bottomPanel, BorderLayout.SOUTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+    /**
+     * Add a user to the session so they can read messages.
+     * @param u the user to be added
+     */
+    void addUser(User u){
+        group.addUser(u);
+    }
+    /**
+     * Save information about a session including members and recent messages.
+     */
+    void saveSession(){ 
+        
+    }  
 }

@@ -20,8 +20,8 @@ public class Messenger {
         //create window
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
-        messengerGUI.showGUI();
-     
+        Newsfeed newsfeed = new Newsfeed();
+        newsfeed.showNewsfeedGUI();
     }
     
 }
