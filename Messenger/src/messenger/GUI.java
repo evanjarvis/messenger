@@ -22,7 +22,7 @@ public class GUI extends JFrame {
     protected void showGUI(){
         // Reads Image From File
         setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBPoly.jpg"));
+	JLabel background=new JLabel(new ImageIcon("build/BTBPoly.jpg"));
        
         final int TEXT_FIELD_WIDTH = 25;
         
@@ -61,7 +61,7 @@ public class GUI extends JFrame {
     protected void showGuestGUI(){
         // Reads Image From File
         setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBSmall.jpg"));
+	JLabel background=new JLabel(new ImageIcon("build/BTBSmall.jpg"));
        
         final int TEXT_FIELD_WIDTH = 25;
         
@@ -86,7 +86,7 @@ public class GUI extends JFrame {
         JButton sendButton = new JButton("Send");
         bottomPanel.add(sendButton, BorderLayout.EAST);
         
-        JFrame frame = new JFrame("Messenger App");
+        JFrame frame = new JFrame("BTB Messenger App (Guest)");
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -145,16 +145,14 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event){
                 //open registeration window
-                showRegistrationFrame();
+                RegistrationFrame registration = new RegistrationFrame();
+                registration.showGUI();
             }
         });
         guestButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
                 showGuestGUI();
-                
-                //start guest sesssion
-                //TODO add code here
             }
         });     
         
@@ -177,64 +175,5 @@ public class GUI extends JFrame {
         frame.pack();
         frame.setResizable(false);
         frame.setVisible(true);
-    }
-    
-    /**
-     * Display the screen for registering a new user.
-     */
-    protected void showRegistrationFrame(){
-        int LABEL_WIDTH = 10;
-        int TEXT_FIELD_WIDTH = 20;
-                
-        final JPanel formPanel = new JPanel(new GridLayout(0, 2, 6, 6));
-        
-        //make the registration 
-        JLabel fn = new JLabel("First Name:");
-        final JTextField firstName = new JTextField(TEXT_FIELD_WIDTH);
-        fn.setLabelFor(firstName);
-        formPanel.add(fn); formPanel.add(firstName);
-        JLabel ln = new JLabel("Last Name:");
-        final JTextField lastName = new JTextField(TEXT_FIELD_WIDTH);
-        ln.setLabelFor(lastName);
-        formPanel.add(ln); formPanel.add(lastName);
-        JLabel u = new JLabel("Username:");
-        final JTextField username = new JTextField(TEXT_FIELD_WIDTH);
-        u.setLabelFor(username);
-        formPanel.add(u); formPanel.add(username);
-        JLabel pw = new JLabel("Password:");
-        final JPasswordField password = new JPasswordField(TEXT_FIELD_WIDTH);
-        pw.setLabelFor(password);
-        formPanel.add(pw); formPanel.add(password);
-        JLabel cp = new JLabel("Confirm Password:");
-        final JPasswordField confirmPassword = new JPasswordField(TEXT_FIELD_WIDTH);
-        cp.setLabelFor(confirmPassword);
-        formPanel.add(cp); formPanel.add(confirmPassword);
-        
-        //make the signup button
-        JButton registerButton = new JButton("Sign Up");
-        registerButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent event){
-                if(Arrays.equals(password.getPassword(), confirmPassword.getPassword())){
-                    //register
-                    User newUser = new User(firstName.getText(), lastName.getText(), username.getText(), confirmPassword.getPassword());
-                    try {
-                        newUser.Register();
-                        JOptionPane.showMessageDialog(formPanel, "Registration Successful!");
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(formPanel, "Registration error.");
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(formPanel, "Passwords must match.");
-                }
-            }
-        });
-        formPanel.add(registerButton);
-        
-        JFrame registrationFrame = new JFrame("Register");
-        registrationFrame.add(formPanel);
-        registrationFrame.setResizable(false);
-        registrationFrame.pack();
-        registrationFrame.setVisible(true);
     }
 }
