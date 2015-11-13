@@ -17,110 +17,6 @@ import javax.swing.border.*;
  */
 public class GUI extends JFrame {
             private String message;
-
-    /**
-     * Create and display the main frame for the messenger program.
-     */
-    protected void showMessengerGUI(){
-        // Reads Image From File
-        setLayout(new BorderLayout());
-	final JLabel background = new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBPoly.jpg"));
-        final int TEXT_FIELD_WIDTH = 25;
-        
-        final JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BorderLayout());
-        topPanel.add(new JLabel("Messages:"), BorderLayout.NORTH);
-        JTextArea messageField = new JTextArea(10, 25);
-        messageField.setEditable(false);
-        JScrollPane scroller = new JScrollPane(messageField);
-        topPanel.add(messageField, BorderLayout.CENTER);
-        topPanel.setBackground(new Color(0xA7B23C));
-        
-        // Add image to background
-        topPanel.add(background);
-	background.setLayout(new FlowLayout());
-        
-        final JPanel bottomPanel = new JPanel();
-        bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        bottomPanel.setLayout(new BorderLayout());
-        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
-        bottomPanel.add(entryField, BorderLayout.WEST);
-        JButton sendButton = new JButton("Send");
-        bottomPanel.add(sendButton, BorderLayout.EAST);
-        bottomPanel.setBackground(new Color(0x609EAA));
-        JButton backButton = new JButton("Back");
-        topPanel.add(backButton, BorderLayout.EAST);
-        
-        backButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent event){
-            //open registeration window
-            showStartupFrame();  
-            }
-        });
-
-        
-        sendButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent event){
-            //open registeration window
-            message = entryField.getText();
-            JLabel jlabel = new JLabel(message);
-            jlabel.setFont(new Font("Helvetica",1,20));
-
-            topPanel.add(jlabel);            
-            }
-        });
-        JFrame frame = new JFrame("Messenger App");
-        frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(bottomPanel, BorderLayout.SOUTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setResizable(false);
-        frame.setVisible(true);
-    }
-    /**
-     * Creates Guest interface
-     */
-    protected void showGuestGUI(){
-        // Reads Image From File
-        setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("/Users/DiegoB/Dropbox/Computerscience/ComputerScience240/messenger/BTBSmall.jpg"));
-       
-        final int TEXT_FIELD_WIDTH = 25;
-        
-        final JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BorderLayout());
-        topPanel.add(new JLabel("Messages:"), BorderLayout.NORTH);
-        JTextArea messageField = new JTextArea(10, 25);
-        messageField.setEditable(false);
-        JScrollPane scroller = new JScrollPane(messageField);
-        topPanel.add(messageField, BorderLayout.CENTER);
-        
-        
-         //Add image to background
-        topPanel.add(background);
-	background.setLayout(new FlowLayout());
-        
-       
-        
-        final JPanel bottomPanel = new JPanel();
-        bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        bottomPanel.setLayout(new BorderLayout());
-        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
-        bottomPanel.add(entryField, BorderLayout.WEST);
-        JButton sendButton = new JButton("Send");
-        bottomPanel.add(sendButton, BorderLayout.EAST);
-        
-        
-        
-        JFrame frame = new JFrame("Messenger App");
-        frame.add(topPanel, BorderLayout.NORTH);
-        frame.add(bottomPanel, BorderLayout.SOUTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
     /**
      * Show the startup screen.  Users may choose to login, register a new account, or continue as a guest.
      */
@@ -176,6 +72,9 @@ public class GUI extends JFrame {
                 //Zero out the possible password, for security.
                 Arrays.fill(input, '0');
                 //passwordField.selectAll();
+                
+                Session session = new Session();
+                session.showMessengerGUI();
             }
         });
         registerButton.addActionListener(new ActionListener(){
@@ -188,7 +87,8 @@ public class GUI extends JFrame {
         guestButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
-                showGuestGUI();
+                Session session = new Session();
+                //showGuestGUI();
                 
                 //start guest sesssion
                 //TODO add code here

@@ -17,7 +17,7 @@ public class User {
     private char[] password;
     
     //Change these to host url, database username and password
-    private final String HOST = "jdbc:derby://localhost:1527/messenger_test";
+    private final String HOST = "jdbc:derby://localhost:1527/messenger";
     private final String USER = "messenger";
     private final String PASS = "test";
     
