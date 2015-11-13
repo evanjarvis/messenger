@@ -3,6 +3,9 @@ package messenger;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,6 +22,29 @@ import javax.swing.border.EmptyBorder;
  */
 public class Session extends JFrame{
     Group group;
+    private boolean guestSession;
+    User localUser;
+
+    /**
+     * Constructor to start a new Session.
+     * @param username username of the local user
+     * @throws SQLException 
+     */
+    public Session(String username) throws SQLException {
+        if(username.equals("guest")){
+            guestSession = true;
+        } else {
+            guestSession = false;
+            try {
+                localUser = new User(username);
+                showGUI();
+                System.out.println("Local user is " + localUser);
+            } catch (SQLException ex) {
+               System.out.println("Not found!");
+                
+            }
+        }
+    }
     /**
      * Add a user to the session so they can read messages.
      * @param u the user to be added
