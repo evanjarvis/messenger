@@ -62,8 +62,8 @@ public class GUI extends JFrame {
                     User user = new User(inputUserName, input);
                     if(user.validate() == true){
                         Session session = new Session(user);
-                        session.showGUI();
-                    } else {
+                        session.showNewsfeedGUI();                    } 
+                    else {
                         System.out.println("User validation failed"); //testing statement, remove later
                     }
                 } catch (SQLException ex) {
@@ -71,6 +71,9 @@ public class GUI extends JFrame {
                 }
             }
         });
+        
+        
+        
         registerButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
@@ -79,13 +82,18 @@ public class GUI extends JFrame {
                 registration.showGUI();
             }
         });
+        
+        
+        
         guestButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
                 Session session = new Session();
-                session.showGUI();
+                session.showNewsfeedGUI();
             }
         });     
+        
+        
         
         //layout
         innerLoginPane.add(usernameLabel);
