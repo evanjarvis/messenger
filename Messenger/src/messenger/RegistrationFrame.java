@@ -6,10 +6,13 @@
 package messenger;
 
 import java.awt.GridLayout;
+import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -17,6 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -32,7 +37,9 @@ public class RegistrationFrame {
                 
         final JPanel formPanel = new JPanel(new GridLayout(0, 2, 6, 6));
         
-        //make the registration 
+        final ArrayList<JTextField> fieldList = new ArrayList<JTextField>();
+        
+        //make the registration form
         JLabel fn = new JLabel("First Name:");
         final JTextField firstName = new JTextField(TEXT_FIELD_WIDTH);
         fn.setLabelFor(firstName);
@@ -54,25 +61,36 @@ public class RegistrationFrame {
         cp.setLabelFor(confirmPassword);
         formPanel.add(cp); formPanel.add(confirmPassword);
         
+        fieldList.add(firstName);
+        fieldList.add(lastName);
+        fieldList.add(password);
+        fieldList.add(confirmPassword);
+        
         //make the signup button
         JButton registerButton = new JButton("Sign Up");
         registerButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
-                if(Arrays.equals(password.getPassword(), confirmPassword.getPassword())){
-                    //register
-                    User newUser = new User(firstName.getText(), lastName.getText(), username.getText(), confirmPassword.getPassword());
-                    try {
-                        newUser.Register();
-                        JOptionPane.showMessageDialog(formPanel, "Registration Successful!");
-                    } catch (SQLException ex) {
-                        JOptionPane.showMessageDialog(formPanel, "Registration error.");
+                //check for field completion
+                if(checkFields(fieldList) == true){
+                    //check for password match
+                    if(Arrays.equals(password.getPassword(), confirmPassword.getPassword())){
+                        //register
+                        User newUser = new User(firstName.getText(), lastName.getText(), username.getText(), confirmPassword.getPassword());
+                        try {
+                            newUser.Register();
+                            JOptionPane.showMessageDialog(formPanel, "Registration Successful!");
+                        } catch (SQLException ex) {
+                            JOptionPane.showMessageDialog(formPanel, "Registration error.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(formPanel, "Passwords must match.");
                     }
                 } else {
-                    JOptionPane.showMessageDialog(formPanel, "Passwords must match.");
+                    JOptionPane.showMessageDialog(formPanel, "Please ensure all fields are completed.");
                 }
             }
-        });
+        });  
         formPanel.add(registerButton);
         
         JFrame registrationFrame = new JFrame("Register");
@@ -80,6 +98,20 @@ public class RegistrationFrame {
         registrationFrame.setResizable(false);
         registrationFrame.pack();
         registrationFrame.setVisible(true);
+        
+
     }
-    
+    /**
+     * Check to see if all JTextFields in a List are completed.
+     * @param list The list of JTextFields to check
+     * @return true if all fields are completed, otherwise false
+     */
+    private boolean checkFields(ArrayList<JTextField> list){
+        for (JTextField current : list) {
+            if(current.getText().trim().isEmpty()){
+                return false;
+            }
+        }
+        return true;
+    }
 }
