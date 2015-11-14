@@ -17,9 +17,9 @@ public class User {
     private char[] password;
     
     //Change these to host url, database username and password
-    private final String HOST = "jdbc:derby://localhost:1527/messenger";
-    private final String USER = "messenger";
-    private final String PASS = "test";
+    private final String HOST = "jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull";
+    private final String USER = "evanjarv_project";
+    private final String PASS = "User1945";
     
    
     /**
@@ -34,6 +34,19 @@ public class User {
         lastName = ln;
         username = un;
         password = pw;
+    }
+    /**
+     * Constructor for a user with username and password. User must be validated with the validate()
+     * method in order to add other information.
+     * @param un the username
+     * @param pw the password
+     * @throws SQLException
+     */
+    public User(String un, char[] pw) throws SQLException{
+        username = un;
+        password = pw;
+        firstName = null;
+        lastName = null;
     }
     public boolean validate() throws SQLException{
         //TODO: insert user validation code here
@@ -54,8 +67,7 @@ public class User {
             
             //execute
             
-            
-            
+
         } catch(SQLException err){
             System.out.println("Database connection failed");
         }
@@ -72,7 +84,7 @@ public class User {
             System.out.println("Connection established!");
             
             //prepare SQL statement
-            String sql = "INSERT INTO MESSENGER.USERS (FIRST_NAME, LAST_NAME, USERNAME, PASSWORD) " +
+            String sql = "INSERT INTO USERS (FIRST_NAME, LAST_NAME, USERNAME, PASSWORD) " +
                    "VALUES (?, ?, ?, ?)";
             
             //create PreparedStatement

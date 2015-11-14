@@ -23,7 +23,6 @@ public class Session extends JFrame{
     /**
      * Constructor to start a new Session.
      * @param user the local user
-     * @param guest true if the session is to be a guest session, false for a regular session
      * @throws SQLException 
      */
     public Session(User user) throws SQLException {
@@ -36,7 +35,7 @@ public class Session extends JFrame{
     protected void showGUI(){
         // Reads Image From File
         setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("inages/BTBPoly.jpg"));
+	JLabel background=new JLabel(new ImageIcon("images/BTBPoly.jpg"));
        
         final int TEXT_FIELD_WIDTH = 25;
         
@@ -62,7 +61,13 @@ public class Session extends JFrame{
         bottomPanel.add(sendButton, BorderLayout.EAST);
         bottomPanel.setBackground(new Color(0x609EAA));
         
-        JFrame frame = new JFrame("Messenger App");
+        String frameTitle;
+        if(guestSession == true){
+            frameTitle = "Messenger App (Guest)";
+        } else {
+            frameTitle = "Messenger App";
+        }
+        JFrame frame = new JFrame(frameTitle);
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

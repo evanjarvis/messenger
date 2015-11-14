@@ -22,6 +22,8 @@ public class Messenger {
         messengerGUI.showStartupFrame();
         Newsfeed newsfeed = new Newsfeed();
         newsfeed.showNewsfeedGUI();
+        Session session = new Session();
+        session.showGUI();
     }
     
 }
