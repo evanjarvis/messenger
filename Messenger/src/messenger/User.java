@@ -34,6 +34,7 @@ public class User {
         lastName = ln;
         username = un;
         password = pw;
+        
     }
     /**
      * Constructor for a user with username and password. User must be validated with the validate()
@@ -62,8 +63,10 @@ public class User {
             PreparedStatement queryUsername = connection.prepareStatement(usernameSql);
             PreparedStatement queryPassword = connection.prepareStatement(passwordSql);
             queryUsername.setString(1, username);
+            System.out.println(username);
             String passwordString = new String(password);
             queryPassword.setString(1, passwordString);
+
             
             //execute
             
@@ -73,6 +76,18 @@ public class User {
         }
         return false;
     }
+    
+    
+    void loopPrint() throws SQLException{
+    Connection con = DriverManager.getConnection(HOST, USER, PASS);
+    Statement sta = con.createStatement(); 
+      ResultSet res = sta.executeQuery("SELECT FROM USER.FIRST_NAME");
+      System.out.println("Customers");
+      while (res.next()) {
+        String firstName = res.getString("FIRST_NAME");
+        //String lastName = res.getString("LastName");
+        System.out.println("   "+firstName);
+      }}
     /**
      * Registers a user by adding it to the database.
      */
@@ -108,7 +123,21 @@ public class User {
         }
         
     }
-    void saveSession(){
+    void addNewsfeed(String newsfeed) throws SQLException{
+        //establish connection
+       
+            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+            System.out.println("Connection established!");
+            
+            String sql = "INSERT INTO NEWSFEEDMAIN (FIRST_NAME, LAST_NAME, NEWSFEED) " +
+                   "VALUES (?, ?, ?)";
+            
+            //create PreparedStatement
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            System.out.println(newsfeed);
+            statement.setString(3, newsfeed);
         
     }
     public void changePassword(char[] pw){

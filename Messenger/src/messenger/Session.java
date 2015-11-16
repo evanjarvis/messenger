@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.border.EmptyBorder;
 /**
  *
@@ -16,6 +18,7 @@ public class Session extends JFrame{
     Group group;
     private final boolean guestSession;
     User localUser;
+    private String message;
 
     /**
      * Default constructor starts a session with guest privileges.
@@ -29,7 +32,7 @@ public class Session extends JFrame{
      * @throws SQLException 
      */
     public Session(User user) throws SQLException {
-        localUser = user;
+        this.localUser = user;
         guestSession = false;
     }
     
@@ -84,10 +87,17 @@ public class Session extends JFrame{
         post.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
-                String message = entryField.getText();
+                message = entryField.getText();
                 messageField.append(message+ "\n");
-            }
+                try {
+                    localUser.addNewsfeed(message);
+                } catch (SQLException ex) {
+                    //Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Didn't work nigga");
+                }
+           }
         });
+        
         
         
         // Will search for friends or Trends 
@@ -96,7 +106,7 @@ public class Session extends JFrame{
             public void actionPerformed(ActionEvent event){
                 try{
                     String search = entryField2.getText();
-                    Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/messenger");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull");
                     //ps = con.prepareStatement("select * from where users id ?");
                     //rs = ps.executeQuery();
                     
@@ -154,6 +164,7 @@ public class Session extends JFrame{
             @Override
             public void actionPerformed(ActionEvent event){
                 showNewsfeedGUI();
+                //showMessageGUI();
             }
         });
 

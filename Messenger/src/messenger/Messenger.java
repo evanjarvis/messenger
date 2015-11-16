@@ -2,6 +2,7 @@ package messenger;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import javax.swing.*;
 
 
@@ -16,11 +17,14 @@ public class Messenger {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         //create window
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
-        
+        Session session = new Session();
+        //session.showNewsfeedGUI();
+        User localUser = null;
+        localUser.loopPrint();
         
     }
     

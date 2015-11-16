@@ -54,14 +54,16 @@ public class GUI extends JFrame {
         loginButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                char[] input = passwordField.getPassword();
                 String inputUserName = usernameField.getText();
+                char[] input = passwordField.getPassword();
                 //Zero out the possible password, for security.
                 Arrays.fill(input, '0');
+                Session session = new Session();
+                //session.showNewsfeedGUI();  
                 try {
                     User user = new User(inputUserName, input);
                     if(user.validate() == true){
-                        Session session = new Session(user);
+                        //Session session = new Sessionalse(user);
                         session.showNewsfeedGUI();                    } 
                     else {
                         System.out.println("User validation failed"); //testing statement, remove later
