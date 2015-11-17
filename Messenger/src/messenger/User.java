@@ -2,8 +2,6 @@ package messenger;
 
 import static java.lang.System.err;
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.activation.DataSource;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -23,8 +21,7 @@ public class User {
     private final String USER = "evanjarv_project";
     private final String PASS = "User1945";
     
-   private Newsfeed newsfeed;       //the user's personal newsfeed
-    
+   
     /**
      * Constructor for a new User.
      * @param fn first name
@@ -36,15 +33,17 @@ public class User {
         firstName = fn;
         lastName = ln;
         username = un;
-        password = pw;      
+        password = pw;
+        
     }
     /**
      * Constructor for a user with username and password. User must be validated with the validate()
      * method in order to add other information.
      * @param un the username
      * @param pw the password
+     * @throws SQLException
      */
-    public User(String un, char[] pw){
+    public User(String un, char[] pw) throws SQLException{
         username = un;
         password = pw;
         firstName = null;
@@ -77,22 +76,8 @@ public class User {
         }
         return false;
     }
-    /**
-     * Post a public message.
-     */
-    void post(String message)throws SQLException {
-        try{
-            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
-            String sql = "INSERT INTO MESSAGEUSER (USER_NAME, MESSAGE) " + "VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, message);
-            statement.execute();
-        } catch (SQLException e) {
-            System.out.println("connection failed");
-        }
-    }
-
+    
+    
     void loopPrint() throws SQLException{
     Connection con = DriverManager.getConnection(HOST, USER, PASS);
     Statement sta = con.createStatement(); 
@@ -136,6 +121,23 @@ public class User {
         } catch (SQLException ex) {
             System.out.println( ex.getMessage( ) );
         }
+        
+    }
+    void addNewsfeed(String newsfeed) throws SQLException{
+        //establish connection
+       
+            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+            System.out.println("Connection established!");
+            
+            String sql = "INSERT INTO NEWSFEEDMAIN (FIRST_NAME, LAST_NAME, NEWSFEED) " +
+                   "VALUES (?, ?, ?)";
+            
+            //create PreparedStatement
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            System.out.println(newsfeed);
+            statement.setString(3, newsfeed);
         
     }
     public void changePassword(char[] pw){

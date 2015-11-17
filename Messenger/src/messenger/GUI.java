@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -22,7 +20,7 @@ public class GUI extends JFrame {
         int TEXT_FIELD_WIDTH = 20;
         
         setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("build/images/BTBSmall.jpg"));
+	JLabel background=new JLabel(new ImageIcon("images/BTBSmall.jpg"));
 
         //setup containers
         JPanel container = new JPanel(new GridLayout(0, 1));
@@ -65,9 +63,8 @@ public class GUI extends JFrame {
                 try {
                     User user = new User(inputUserName, input);
                     if(user.validate() == true){
-                        session.addUser(user);
-                        
-                    } 
+                        //Session session = new Sessionalse(user);
+                        session.showNewsfeedGUI();                    } 
                     else {
                         System.out.println("User validation failed"); //testing statement, remove later
                     }
@@ -86,20 +83,20 @@ public class GUI extends JFrame {
                 RegistrationFrame registration = new RegistrationFrame();
                 registration.showGUI();
             }
-        });       
+        });
+        
+        
+        
         guestButton.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent event) {
-                    User temp = new User("Guest", null); //this is necessary so there is a user in the session
-                    Session session = new Session(temp);
-                try {
-                    session.showNewsfeedGUI();
-                } catch (SQLException ex) {
-                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            public void actionPerformed(ActionEvent event){
+                Session session = new Session();
+                session.showNewsfeedGUI();
             }
         });     
-       
+        
+        
+        
         //layout
         innerLoginPane.add(usernameLabel);
         innerLoginPane.add(usernameField);
