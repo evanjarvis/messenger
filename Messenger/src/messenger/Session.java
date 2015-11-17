@@ -29,113 +29,18 @@ public class Session extends JFrame{
     /**
      * Constructor to start a new Session.
      * @param user the local user
-     * @throws SQLException 
      */
-    public Session(User user) throws SQLException {
+    public Session(User user) {
         localUser = user;
         guestSession = false;
     }
-    
-    protected void showNewsfeedGUI(){
-       // Reads Image From File
-        setLayout(new BorderLayout());
-        final JLabel background = new JLabel(new ImageIcon("build/Images/BTBPoly.jpg"));
-        final int TEXT_FIELD_WIDTH = 20;
-        
-        // Sets the panels for the window
-        final JPanel topPanel = new JPanel();
-        final JPanel centerPanel = new JPanel();
-        final JPanel sidePanel = new JPanel();
-        final JPanel bottomPanel = new JPanel();
-        final JTextArea messageField = new JTextArea(100, 50);     
-        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
-        final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
-        
-        
-
-        // Changes colors of the panels
-        sidePanel.setBackground(new Color(0xB8D1F1));
-        topPanel.setBackground(new Color(0x73D3FC));
-        bottomPanel.setBackground(new Color(0x73D3FC));
-
-        // Sets dimensions of the Side Panel and Center Panel
-        sidePanel.setPreferredSize(new Dimension(200, 100));
-        centerPanel.setPreferredSize(new Dimension(500, 700));
-      
-
-
-        //bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        centerPanel.setLayout(new BorderLayout());
-        
-        // Establishes the messagefield for the Newsfeed... Obviously...
-        messageField.setEditable(true);
-        JScrollPane scroller = new JScrollPane(messageField);
-        centerPanel.add(messageField, BorderLayout.CENTER);
-        
-        // Sets the Post button and entry field on the bottom Panel
-        JButton post = new JButton("Post");
-        bottomPanel.add(post, BorderLayout.WEST);
-        bottomPanel.add(entryField, BorderLayout.WEST);
-        
-        
-        // Sets the Search button and entryfield on the top Panel
-        JButton search = new JButton("Search");
-        topPanel.add(search, BorderLayout.WEST);
-        topPanel.add(entryField2, BorderLayout.WEST);     
-        
-        // Adds a post to the message field
-        post.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent event){
-                message = entryField.getText();
-                messageField.append(message+ "\n");
-                try {
-                    
-                    localUser.addNewsfeed(message);
-                } catch (SQLException ex) {
-                    //Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
-                    System.out.println("Didn't work");
-                }
-           }
-        });
-        
-        
-        
-        // Will search for friends or Trends 
-        search.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent event){
-                try{
-                    String search = entryField2.getText();
-                    Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull");
-                    //ps = con.prepareStatement("select * from where users id ?");
-                    //rs = ps.executeQuery();
-                    
-                }
-                catch(Exception e){
-                }    
-            }
-        });      
-       // Draws the Panels
-        JFrame frame = new JFrame("NewsFeed");
-        frame.add(sidePanel, BorderLayout.WEST);
-        frame.add(centerPanel, BorderLayout.CENTER);
-        centerPanel.add(topPanel, BorderLayout.NORTH);
-        centerPanel.add(bottomPanel,BorderLayout.SOUTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setResizable(true);
-        frame.setVisible(true);
-    }
-    
-    
         /**
      * Create and display the main frame for the messenger program.
      */
     protected void showMessageGUI(){
         // Reads Image From File
         setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("images/BTBPoly.jpg"));
+	JLabel background=new JLabel(new ImageIcon("build/images/BTBPoly.jpg"));
        
         final int TEXT_FIELD_WIDTH = 25;   
         final JPanel topPanel1 = new JPanel();
@@ -164,7 +69,7 @@ public class Session extends JFrame{
         backButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
-                showNewsfeedGUI();
+                //showNewsfeedGUI();
                 //showMessageGUI();
             }
         });
@@ -206,7 +111,171 @@ public class Session extends JFrame{
         frame.pack();
         frame.setVisible(true);
     }
-    
+            protected void display(){
+       // Reads Image From File
+        setLayout(new BorderLayout());
+        final JLabel background = new JLabel(new ImageIcon("build/Images/BTBPoly.jpg"));
+        final int TEXT_FIELD_WIDTH = 20;
+        
+        // Sets the panels for the window
+        final JPanel topPanel = new JPanel();
+        final JPanel centerPanel = new JPanel();
+        final JPanel sidePanel = new JPanel();
+        final JPanel bottomPanel = new JPanel();
+        final JTextArea messageField = new JTextArea(100, 50);     
+        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
+        final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
+
+        // Changes colors of the panels
+        sidePanel.setBackground(new Color(0xB8D1F1));
+        topPanel.setBackground(new Color(0x73D3FC));
+        bottomPanel.setBackground(new Color(0x73D3FC));
+
+        // Sets dimensions of the Side Panel and Center Panel
+        sidePanel.setPreferredSize(new Dimension(200, 100));
+        centerPanel.setPreferredSize(new Dimension(500, 700));
+
+        //bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        centerPanel.setLayout(new BorderLayout());
+        
+        // Establishes the messagefield for the Newsfeed... Obviously...
+        messageField.setEditable(true);
+        JScrollPane scroller = new JScrollPane(messageField);
+        centerPanel.add(messageField, BorderLayout.CENTER);
+        
+        // Sets the Post button and entry field on the bottom Panel
+        JButton post = new JButton("Post");
+        bottomPanel.add(post, BorderLayout.WEST);
+        bottomPanel.add(entryField, BorderLayout.WEST);
+       
+        // Sets the Search button and entryfield on the top Panel
+        JButton search = new JButton("Search");
+        topPanel.add(search, BorderLayout.WEST);
+        topPanel.add(entryField2, BorderLayout.WEST);     
+        
+        // Adds a post to the message field
+        post.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                String message = entryField.getText();
+                messageField.append(message+ "\n");
+                try { 
+                    //send the message to database
+                    localUser.post(message);
+                } catch (SQLException ex) {
+                    //Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Didn't work");
+                }
+           }
+        });
+        // Will search for friends or Trends 
+        search.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                try{
+                    String search = entryField2.getText();
+                    Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull");
+                    //ps = con.prepareStatement("select * from where users id ?");
+                    //rs = ps.executeQuery();
+                    
+                }
+                catch(Exception e){
+                }    
+            }
+        });      
+       // Draws the Panels
+        JFrame frame = new JFrame("NewsFeed");
+        frame.add(sidePanel, BorderLayout.WEST);
+        frame.add(centerPanel, BorderLayout.CENTER);
+        centerPanel.add(topPanel, BorderLayout.NORTH);
+        centerPanel.add(bottomPanel,BorderLayout.SOUTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setResizable(true);
+        frame.setVisible(true);
+    }
+        protected void showNewsfeedGUI() throws SQLException {
+       // Reads Image From File
+        setLayout(new BorderLayout());
+        final JLabel background = new JLabel(new ImageIcon("build/Images/BTBPoly.jpg"));
+        final int TEXT_FIELD_WIDTH = 20;
+        
+        // Sets the panels for the window
+        final JPanel topPanel = new JPanel();
+        final JPanel centerPanel = new JPanel();
+        final JPanel sidePanel = new JPanel();
+        final JPanel bottomPanel = new JPanel();
+        final JTextArea messageField = new JTextArea(100, 50);     
+        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
+        final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
+
+        // Changes colors of the panels
+        sidePanel.setBackground(new Color(0xB8D1F1));
+        topPanel.setBackground(new Color(0x73D3FC));
+        bottomPanel.setBackground(new Color(0x73D3FC));
+
+        // Sets dimensions of the Side Panel and Center Panel
+        sidePanel.setPreferredSize(new Dimension(200, 100));
+        centerPanel.setPreferredSize(new Dimension(500, 700));
+        
+        //bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        centerPanel.setLayout(new BorderLayout());
+        
+        // Establishes the messagefield for the Newsfeed... Obviously...
+        messageField.setEditable(true);
+        JScrollPane scroller = new JScrollPane(messageField);
+        centerPanel.add(messageField, BorderLayout.CENTER);
+        
+        // Sets the Post button and entry field on the bottom Panel
+        JButton post = new JButton("Post");
+        bottomPanel.add(post, BorderLayout.WEST);
+        bottomPanel.add(entryField, BorderLayout.WEST);     
+        
+        // Sets the Search button and entryfield on the top Panel
+        JButton search = new JButton("Search");
+        topPanel.add(search, BorderLayout.WEST);
+        topPanel.add(entryField2, BorderLayout.WEST);     
+        
+        // Adds a post to the message field
+        post.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                message = entryField.getText();
+                messageField.append(message+ "\n"); 
+                try {
+                    localUser.post(message);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
+                }
+           }
+        });
+        
+        // Will search for friends or Trends 
+        search.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                try{
+                    String search = entryField2.getText();
+                    Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull");
+                    //ps = con.prepareStatement("select * from where users id ?");
+                    //rs = ps.executeQuery();
+                    
+                }
+                catch(Exception e){
+                }    
+            }
+        });      
+       // Draws the Panels
+        JFrame frame = new JFrame("NewsFeed");
+        frame.add(sidePanel, BorderLayout.WEST);
+        frame.add(centerPanel, BorderLayout.CENTER);
+        centerPanel.add(topPanel, BorderLayout.NORTH);
+        centerPanel.add(bottomPanel,BorderLayout.SOUTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setResizable(true);
+        frame.setVisible(true);
+    }
     /**
      * Add a user to the session so they can read messages.
      * @param u the user to be added

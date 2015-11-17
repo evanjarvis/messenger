@@ -21,7 +21,6 @@ public class Messenger {
         //create window
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
-        Session session = new Session();
         //ses¢sion.showNewsfeedGUI();
         //User localUser = null;
         //localUser.loopPrint();
