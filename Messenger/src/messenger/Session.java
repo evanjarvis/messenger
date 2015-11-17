@@ -18,7 +18,7 @@ public class Session extends JFrame{
     Group group;
     private final boolean guestSession;
     User localUser;
-    private String message;
+    public String message;
 
     /**
      * Default constructor starts a session with guest privileges.
@@ -32,7 +32,7 @@ public class Session extends JFrame{
      * @throws SQLException 
      */
     public Session(User user) throws SQLException {
-        this.localUser = user;
+        localUser = user;
         guestSession = false;
     }
     
@@ -90,10 +90,11 @@ public class Session extends JFrame{
                 message = entryField.getText();
                 messageField.append(message+ "\n");
                 try {
+                    
                     localUser.addNewsfeed(message);
                 } catch (SQLException ex) {
                     //Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
-                    System.out.println("Didn't work nigga");
+                    System.out.println("Didn't work");
                 }
            }
         });
