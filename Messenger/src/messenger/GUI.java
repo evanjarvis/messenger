@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -20,7 +22,7 @@ public class GUI extends JFrame {
         int TEXT_FIELD_WIDTH = 20;
         
         setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("images/BTBSmall.jpg"));
+	JLabel background=new JLabel(new ImageIcon("build/images/BTBSmall.jpg"));
 
         //setup containers
         JPanel container = new JPanel(new GridLayout(0, 1));
@@ -30,7 +32,7 @@ public class GUI extends JFrame {
         
         JPanel loginWrapper = new JPanel(new GridLayout(0, 1));
         JPanel innerLoginPane = new JPanel(new GridLayout(0, 2, 5, 5));
-        JPanel loginPane = new JPanel(new BorderLayout());
+        final JPanel loginPane = new JPanel(new BorderLayout());
         JPanel bottomPane = new JPanel(new FlowLayout());
         loginPane.setBorder(new BevelBorder(BevelBorder.RAISED));
         loginWrapper.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -55,27 +57,23 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String inputUserName = usernameField.getText();
-                char[] input = passwordField.getPassword();
-                //Zero out the possible password, for security.
-                Arrays.fill(input, '0');
-                Session session = new Session();
-                //session.showNewsfeedGUI();  
+                char[] inputPassword = passwordField.getPassword();
                 try {
-                    User user = new User(inputUserName, input);
-                    if(user.validate() == true){
-                        //Session session = new Sessionalse(user);
-                        session.showNewsfeedGUI();                    } 
+                    User user = new User(inputUserName, inputPassword);
+                    if(user.validate(inputPassword) == true){
+                        Session session = new Session(user);
+                        session.showNewsfeedGUI();
+                    } 
                     else {
-                        System.out.println("User validation failed"); //testing statement, remove later
+                        JOptionPane.showMessageDialog(loginPane, "Invalid username or password.");
+                        //Zero out the possible password, for security.
+                        Arrays.fill(inputPassword, '0');
                     }
                 } catch (SQLException ex) {
-                    System.out.println("Connection failed");
+                    JOptionPane.showMessageDialog(loginPane, "Connection not found.  Please check your network connection.");
                 }
             }
         });
-        
-        
-        
         registerButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
@@ -83,20 +81,20 @@ public class GUI extends JFrame {
                 RegistrationFrame registration = new RegistrationFrame();
                 registration.showGUI();
             }
-        });
-        
-        
-        
+        });       
         guestButton.addActionListener(new ActionListener(){
             @Override
-            public void actionPerformed(ActionEvent event){
-                Session session = new Session();
-                session.showNewsfeedGUI();
+            public void actionPerformed(ActionEvent event) {
+                    User temp = new User("Guest", null); //this is necessary so there is a user in the session
+                    Session session = new Session(temp);
+                try {
+                    session.showNewsfeedGUI();
+                } catch (SQLException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });     
-        
-        
-        
+       
         //layout
         innerLoginPane.add(usernameLabel);
         innerLoginPane.add(usernameField);
