@@ -11,8 +11,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.border.EmptyBorder;
@@ -114,15 +116,19 @@ public class Session extends JFrame{
         backButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
-                //showNewsfeedGUI();
-                //showMessageGUI();
+                try {
+                    showNewsfeedGUI();
+                    //showMessageGUI();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 
         
         // Add image to background
-        //topPanel.add(background);
-	//background.setLayout(new FlowLayout());
+        topPanel1.add(background);
+	background.setLayout(new FlowLayout());
         
         topPanel1.add(backButton, BorderLayout.NORTH);
         topPanel1.setLayout(new BorderLayout());
@@ -136,7 +142,7 @@ public class Session extends JFrame{
         
 
         
-        bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        //bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         bottomPanel.setLayout(new BorderLayout());
         bottomPanel.add(entryField, BorderLayout.CENTER);
         bottomPanel.add(sendButton, BorderLayout.EAST);
@@ -156,7 +162,7 @@ public class Session extends JFrame{
         frame.add(topPanel2, BorderLayout.NORTH);
         frame.add(scroller);
         frame.add(bottomPanel, BorderLayout.SOUTH);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
         
@@ -177,6 +183,8 @@ public class Session extends JFrame{
         final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
         final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
 
+        sidePanel.add(new JLabel("Welcome " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"));
+        
         // Changes colors of the panels
         sidePanel.setBackground(new Color(0xB8D1F1));
         topPanel.setBackground(new Color(0x73D3FC));
@@ -191,9 +199,10 @@ public class Session extends JFrame{
         
         // Establishes the messagefield for the Newsfeed... Obviously...
         messageField.setEditable(false);
-        JScrollPane scroller = new JScrollPane(messageField,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollPane scroller = new JScrollPane(messageField,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         centerPanel.add(scroller, BorderLayout.CENTER);
         
+        // Wraps the text so it doesn't go out of bounds
         messageField.setLineWrap(true);
         messageField.setWrapStyleWord(true);
         
@@ -206,14 +215,18 @@ public class Session extends JFrame{
         // Sets the Search button and entryfield on the top Panel
         JButton search = new JButton("Search");
         topPanel.add(search, BorderLayout.WEST);
-        topPanel.add(entryField2, BorderLayout.WEST);   
+        topPanel.add(entryField2, BorderLayout.WEST);
+        
+        // Sets the button to open message window
+        JButton logout = new JButton("Logout");
+        sidePanel.add(logout, BorderLayout.NORTH);
         
         
         // Connects to the database to display Newsfeed       
         Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull", "evanjarv_project", "User1945");
     
         //prepare SQL statement
-        String sql = "SELECT USER_NAME,MESSAGE FROM NEWSFEED";
+        String sql = "SELECT USER_NAME,MESSAGE,TIMESTAMP FROM NEWSFEED";
         PreparedStatement s = con.prepareStatement(sql);
     
 
@@ -224,25 +237,40 @@ public class Session extends JFrame{
             String str1 = rs.getString("USER_NAME");
             messageField.setFont(new Font("Helvetica", Font.PLAIN, 18));
             String str2 = rs.getString("MESSAGE"); 
-            messageField.append(str1+": "+ str2+ "\n\n");
-            
+            Timestamp str3 = rs.getTimestamp("TIMESTAMP");
+            messageField.append(str1+"\n"+str3 +"\n"+ str2+ "\n\n");                    
         }
         
     
-    
-        // Adds a post to the message field
+     
+       // Adds a post to the message field
         post.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                String formattedDate = sdf.format(date);
+                //System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
                 message = entryField.getText();                
-                messageField.append(localUser.getUsername()+": "+message+ "\n\n"); 
+                messageField.append(localUser.getUsername()+"\n"+formattedDate+"\n"+message+ "\n\n"); 
                 try {
                     localUser.post(message);
                 } catch (SQLException ex) {
                     Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                entryField.setText("");
            }
         });
+        
+        
+        logout.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){                 
+                GUI gui = new GUI();
+                gui.showStartupFrame();              
+            }
+        });   
+        
         
         // Will search for friends or Trends 
         search.addActionListener(new ActionListener(){
@@ -267,7 +295,7 @@ public class Session extends JFrame{
         centerPanel.add(bottomPanel,BorderLayout.SOUTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setResizable(true);
+        frame.setResizable(false);
         frame.setVisible(true);
     }
     /**

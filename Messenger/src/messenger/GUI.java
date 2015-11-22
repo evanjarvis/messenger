@@ -21,23 +21,35 @@ public class GUI extends JFrame {
         int LABEL_WIDTH = 10;
         int TEXT_FIELD_WIDTH = 20;
         
-        setLayout(new BorderLayout());
-	JLabel background=new JLabel(new ImageIcon("build/images/BTBSmall.jpg"));
-
-        //setup containers
-        JPanel container = new JPanel(new GridLayout(0, 1));
         
-        //container.add(background);
+        
+        //setup containers
+        JPanel container = new JPanel(new BorderLayout());
+        
+        
+        
+        JPanel loginWrapper = new JPanel();
+        JPanel innerLoginPane = new JPanel(new GridLayout(0, 2, 5, 0));
+        final JPanel loginPane = new JPanel(new BorderLayout());
+        loginWrapper.setMaximumSize(new Dimension(100, 5));
+        //setLayout(new BorderLayout());
+	
+        ImageIcon image = new ImageIcon("images/BTBMain.jpg");
+        final JPanel topPanel = new JPanel(new BorderLayout());
+        final JPanel bottomPanel = new JPanel(new BorderLayout());
+        topPanel.add(new JLabel(image));
 	//background.setLayout(new FlowLayout());
         
-        JPanel loginWrapper = new JPanel(new GridLayout(0, 1));
-        JPanel innerLoginPane = new JPanel(new GridLayout(0, 2, 5, 5));
-        final JPanel loginPane = new JPanel(new BorderLayout());
-        JPanel bottomPane = new JPanel(new FlowLayout());
-        loginPane.setBorder(new BevelBorder(BevelBorder.RAISED));
-        loginWrapper.setBorder(new EmptyBorder(10, 10, 10, 10));
-        loginWrapper.setMaximumSize(new Dimension(200, 200));
-        bottomPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+       
+        //loginPane.setBorder(new BevelBorder(BevelBorder.RAISED));
+        
+        //loginWrapper.setMaximumSize(new Dimension(10, 10));
+        //bottomPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        // Set color Background
+        loginWrapper.setBackground(new Color(0x03066C));
+        loginPane.setBackground(new Color(0x777BF4));
         
         //setup username and password fields
         JLabel usernameLabel = new JLabel("Username:");
@@ -50,7 +62,9 @@ public class GUI extends JFrame {
         //create the buttons
         JButton loginButton = new JButton("Login");
         JButton registerButton = new JButton("Register");
-        JButton guestButton = new JButton("Contine as Guest");
+        JButton guestButton = new JButton("Guest");
+        loginButton.setPreferredSize(new Dimension(1,1));
+        
         
         //set button actions
         loginButton.addActionListener(new ActionListener(){
@@ -92,6 +106,7 @@ public class GUI extends JFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                
             }
         });     
        
@@ -100,13 +115,16 @@ public class GUI extends JFrame {
         innerLoginPane.add(usernameField);
         innerLoginPane.add(passwordLabel);
         innerLoginPane.add(passwordField);                    
-        loginPane.add(innerLoginPane, BorderLayout.NORTH);
-        loginPane.add(loginButton);
-        loginWrapper.add(loginPane);
-        bottomPane.add(registerButton);
-        bottomPane.add(guestButton);
-        container.add(loginWrapper);
-        container.add(bottomPane);
+        //loginPane.add(innerLoginPane, BorderLayout.NORTH);
+        innerLoginPane.add(loginButton,BorderLayout.CENTER);
+        innerLoginPane.add(registerButton, BorderLayout.WEST);
+        innerLoginPane.add(guestButton, BorderLayout.EAST);
+        loginWrapper.add(innerLoginPane, BorderLayout.CENTER);
+        bottomPanel.add(loginWrapper);
+        
+        container.add(topPanel, BorderLayout.NORTH);
+        container.add(bottomPanel, BorderLayout.SOUTH);
+        
         
         JFrame frame = new JFrame("Login or Register");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -116,3 +134,4 @@ public class GUI extends JFrame {
         frame.setVisible(true);
     }
 }
+//GUI

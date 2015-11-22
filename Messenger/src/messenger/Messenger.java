@@ -22,7 +22,7 @@ public class Messenger {
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
         Session session = new Session();
-        //ses¢sion.showNewsfeedGUI();
+        //session.showMessageGUI();
         //User localUser = null;
         //localUser.loopPrint();
         

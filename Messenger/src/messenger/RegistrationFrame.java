@@ -80,6 +80,7 @@ public class RegistrationFrame {
                         try {
                             newUser.Register();
                             JOptionPane.showMessageDialog(formPanel, "Registration Successful!");
+                            
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(formPanel, "Registration error.");
                         }

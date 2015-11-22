@@ -184,6 +184,8 @@ public class User {
                 return( ex.getMessage());
         }
     }
+    
+    
     /**
      * Change the password.
      * @param pw the new password
