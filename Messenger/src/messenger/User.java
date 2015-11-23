@@ -105,6 +105,9 @@ public class User {
                 lastName = rs.getString("LAST_NAME");
                 //messageField.append(str1+"\n"+str3 +"\n"+ str2+ "\n\n");  
             } else {
+                firstName = "Guest";
+                lastName = "User";
+                      
             }                  
         }
     }
