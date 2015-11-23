@@ -27,9 +27,7 @@ public class Messenger {
         //User localUser = null;
         //localUser.loopPrint();
         
-        //Comment1
-        //Comment2
-        //Comment3
+        //THIS IS THE TEST
     }
     
 }
