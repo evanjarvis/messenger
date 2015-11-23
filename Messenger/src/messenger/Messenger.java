@@ -25,7 +25,7 @@ public class Messenger {
         
         //session.showMessageGUI();
         //User localUser = null;
-        //localUser.loopPrint();
+        //Diego was here
         
     }
     
