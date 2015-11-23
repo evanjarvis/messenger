@@ -70,7 +70,7 @@ public class Session extends JFrame{
     }
     
 
-        /**
+    /**
      * Create and display the main frame for the messenger program.
      */
     protected void showMessageGUI() throws SQLException{
@@ -183,8 +183,10 @@ public class Session extends JFrame{
         final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
         final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
 
-        sidePanel.add(new JLabel("Welcome " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"));
+        localUser.setName();
         
+        sidePanel.add(new JLabel("Welcome " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"));
+           
         // Changes colors of the panels
         sidePanel.setBackground(new Color(0xB8D1F1));
         topPanel.setBackground(new Color(0x73D3FC));
@@ -219,7 +221,10 @@ public class Session extends JFrame{
         
         // Sets the button to open message window
         JButton logout = new JButton("Logout");
-        sidePanel.add(logout, BorderLayout.NORTH);
+        sidePanel.add(logout, BorderLayout.SOUTH);
+        
+        sidePanel.setLayout(new GridLayout(0,1,400,650));
+        sidePanel.add(logout);
         
         
         // Connects to the database to display Newsfeed       
@@ -229,7 +234,6 @@ public class Session extends JFrame{
         String sql = "SELECT USER_NAME,MESSAGE,TIMESTAMP FROM NEWSFEED";
         PreparedStatement s = con.prepareStatement(sql);
     
-
         //set up PreparedStatements
         ResultSet rs = s.executeQuery();
         while(rs.next()) {
@@ -237,8 +241,8 @@ public class Session extends JFrame{
             String str1 = rs.getString("USER_NAME");
             messageField.setFont(new Font("Helvetica", Font.PLAIN, 18));
             String str2 = rs.getString("MESSAGE"); 
-            Timestamp str3 = rs.getTimestamp("TIMESTAMP");
-            messageField.append(str1+"\n"+str3 +"\n"+ str2+ "\n\n");                    
+            Timestamp str3 = rs.getTimestamp("TIMESTAMP");           
+            messageField.append(str1+"\n"+"On: "+str3 +"\n"+ str2+ "\n\n");                    
         }
         
     

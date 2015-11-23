@@ -1,5 +1,6 @@
 package messenger;
 
+import java.awt.Font;
 import java.sql.*;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -11,8 +12,8 @@ import java.util.logging.Logger;
  * @author Me
  */
 public class User {
-    private final String firstName;
-    private final String lastName;
+    private String firstName;
+    private String lastName;
     private final String username;
     private char[] password;
     
@@ -83,6 +84,29 @@ public class User {
         //compare passwords
         password = results.getString("PASSWORD").toCharArray();
         return slowEquals(password, pw);
+    }
+    
+    public void setName() throws SQLException{
+      // Connects to the database to display Newsfeed       
+        Connection con = DriverManager.getConnection(HOST, USER, PASS);
+    
+        //prepare SQL statement
+        String sql = "SELECT FIRST_NAME,LAST_NAME,USERNAME FROM USERS";
+        PreparedStatement s = con.prepareStatement(sql);
+
+        //set up PreparedStatements
+        ResultSet rs = s.executeQuery();
+        while(rs.next()) {
+            String un = rs.getString("USERNAME");
+            if(un.equals(username)){
+                //Catches string from database and displays it on newsfeed
+                firstName = rs.getString("FIRST_NAME");
+                //messageField.setFont(new Font("Helvetica", Font.PLAIN, 18));
+                lastName = rs.getString("LAST_NAME");
+                //messageField.append(str1+"\n"+str3 +"\n"+ str2+ "\n\n");  
+            } else {
+            }                  
+        }
     }
     /**
      * Post a public message.
