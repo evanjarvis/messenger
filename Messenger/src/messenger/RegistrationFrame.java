@@ -30,6 +30,7 @@ public class RegistrationFrame {
         int LABEL_WIDTH = 10;
         int TEXT_FIELD_WIDTH = 20;
                 
+        final JFrame registrationFrame = new JFrame("Register");
         final JPanel formPanel = new JPanel(new GridLayout(0, 2, 6, 6));
         
         final ArrayList<JTextField> fieldList = new ArrayList();
@@ -75,12 +76,13 @@ public class RegistrationFrame {
                         try {
                             newUser.Register();
                             JOptionPane.showMessageDialog(formPanel, "Registration Successful!");
-                            
+                            registrationFrame.dispose();
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(formPanel, "Registration error.");
                         }
                     } else {
                         JOptionPane.showMessageDialog(formPanel, "Passwords must match.");
+                        password.setText(""); confirmPassword.setText("");
                     }
                 } else {
                     JOptionPane.showMessageDialog(formPanel, "Please ensure all fields are completed.");
@@ -88,8 +90,7 @@ public class RegistrationFrame {
             }
         });  
         formPanel.add(registerButton);
-        
-        JFrame registrationFrame = new JFrame("Register");
+
         registrationFrame.add(formPanel);
         registrationFrame.setResizable(false);
         registrationFrame.pack();
