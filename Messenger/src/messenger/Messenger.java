@@ -27,6 +27,7 @@ public class Messenger {
         //User localUser = null;
         //Diego was here
         
+        //THIS IS THE TEST
     }
     
 }
