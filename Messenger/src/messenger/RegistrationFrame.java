@@ -76,7 +76,9 @@ public class RegistrationFrame {
                         try {
                             newUser.Register();
                             JOptionPane.showMessageDialog(formPanel, "Registration Successful!");
+                            Session session = new Session(newUser);
                             registrationFrame.dispose();
+                            session.showNewsfeedGUI();
                         } catch (SQLException ex) {
                             JOptionPane.showMessageDialog(formPanel, "Registration error.");
                         }
