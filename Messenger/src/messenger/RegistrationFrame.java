@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package messenger;
 
 import java.awt.GridLayout;
@@ -37,7 +32,7 @@ public class RegistrationFrame {
                 
         final JPanel formPanel = new JPanel(new GridLayout(0, 2, 6, 6));
         
-        final ArrayList<JTextField> fieldList = new ArrayList<JTextField>();
+        final ArrayList<JTextField> fieldList = new ArrayList();
         
         //make the registration form
         JLabel fn = new JLabel("First Name:");

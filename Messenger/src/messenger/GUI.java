@@ -21,13 +21,11 @@ public class GUI extends JFrame {
         int LABEL_WIDTH = 10;
         int TEXT_FIELD_WIDTH = 20;
         
-        
+        final JFrame frame = new JFrame("Login or Register");
         
         //setup containers
         JPanel container = new JPanel(new BorderLayout());
-        
-        
-        
+
         JPanel loginWrapper = new JPanel();
         JPanel innerLoginPane = new JPanel(new GridLayout(0, 2, 5, 0));
         final JPanel loginPane = new JPanel(new BorderLayout());
@@ -76,12 +74,14 @@ public class GUI extends JFrame {
                     User user = new User(inputUserName, inputPassword);
                     if(user.validate(inputPassword) == true){
                         Session session = new Session(user);
+                        frame.dispose();
                         session.showNewsfeedGUI();
                     } 
                     else {
                         JOptionPane.showMessageDialog(loginPane, "Invalid username or password.");
                         //Zero out the possible password, for security.
                         Arrays.fill(inputPassword, '0');
+                        usernameField.setText(""); passwordField.setText("");
                     }
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(loginPane, "Connection not found.  Please check your network connection.");
@@ -99,7 +99,7 @@ public class GUI extends JFrame {
         guestButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event) {
-                    User temp = new User("Guest", null); //this is necessary so there is a user in the session
+                    User temp = new User("guest", null); //this is necessary so there is a user in the session
                     Session session = new Session(temp);
                 try {
                     session.showNewsfeedGUI();
@@ -125,8 +125,6 @@ public class GUI extends JFrame {
         container.add(topPanel, BorderLayout.NORTH);
         container.add(bottomPanel, BorderLayout.SOUTH);
         
-        
-        JFrame frame = new JFrame("Login or Register");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(container);
         frame.pack();

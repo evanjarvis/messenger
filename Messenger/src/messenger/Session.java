@@ -174,6 +174,8 @@ public class Session extends JFrame{
         final JLabel background = new JLabel(new ImageIcon("build/Images/BTBPoly.jpg"));
         final int TEXT_FIELD_WIDTH = 20;
         
+       final JFrame frame = new JFrame("BTB NewsFeed");
+        
         // Sets the panels for the window
         final JPanel topPanel = new JPanel();
         final JPanel centerPanel = new JPanel();
@@ -182,11 +184,13 @@ public class Session extends JFrame{
         final JTextArea messageField = new JTextArea(100, 50);     
         final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
         final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
-
-        localUser.setName();
         
-        sidePanel.add(new JLabel("Welcome " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"));
-           
+        if(localUser.getUsername().equals("guest")){
+            sidePanel.add(new JLabel("Welcome, Guest"));
+        }
+        else {
+            sidePanel.add(new JLabel("Welcome, " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"));
+        }
         // Changes colors of the panels
         sidePanel.setBackground(new Color(0xB8D1F1));
         topPanel.setBackground(new Color(0x73D3FC));
@@ -226,7 +230,6 @@ public class Session extends JFrame{
         sidePanel.setLayout(new GridLayout(0,1,400,650));
         sidePanel.add(logout);
         
-        
         // Connects to the database to display Newsfeed       
         Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull", "evanjarv_project", "User1945");
     
@@ -244,9 +247,7 @@ public class Session extends JFrame{
             Timestamp str3 = rs.getTimestamp("TIMESTAMP");           
             messageField.append(str1+"\n"+"On: "+str3 +"\n"+ str2+ "\n\n");                    
         }
-        
     
-     
        // Adds a post to the message field
         post.addActionListener(new ActionListener(){
             @Override
@@ -256,12 +257,12 @@ public class Session extends JFrame{
                 String formattedDate = sdf.format(date);
                 //System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
                 message = entryField.getText();                
-                messageField.append(localUser.getUsername()+"\n"+formattedDate+"\n"+message+ "\n\n"); 
                 try {
                     localUser.post(message);
                 } catch (SQLException ex) {
-                    Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(centerPanel, "The connection failed.");
                 }
+                messageField.append(localUser.getUsername()+"\n"+formattedDate+"\n"+message+ "\n\n"); 
                 entryField.setText("");
            }
         });
@@ -271,6 +272,7 @@ public class Session extends JFrame{
             @Override
             public void actionPerformed(ActionEvent event){                 
                 GUI gui = new GUI();
+                frame.dispose();
                 gui.showStartupFrame();              
             }
         });   
@@ -292,7 +294,6 @@ public class Session extends JFrame{
             }
         });      
        // Draws the Panels
-        JFrame frame = new JFrame("BTB NewsFeed");
         frame.add(sidePanel, BorderLayout.WEST);
         frame.add(centerPanel, BorderLayout.CENTER);
         centerPanel.add(topPanel, BorderLayout.NORTH);

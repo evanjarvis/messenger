@@ -67,11 +67,12 @@ public class User {
      * @throws SQLException if the connection could not be established
      */
     public boolean validate(char[] pw) throws SQLException{
+        
         //establish connection
         Connection connection = DriverManager.getConnection(HOST, USER, PASS);
             
         //prepare SQL statement
-        String sql = "SELECT PASSWORD FROM USERS WHERE USERNAME = (?)";
+        String sql = "SELECT * FROM USERS WHERE USERNAME = (?)";
             
         //set up PreparedStatements
         PreparedStatement statement = connection.prepareStatement(sql);
@@ -83,37 +84,21 @@ public class User {
         
         //compare passwords
         password = results.getString("PASSWORD").toCharArray();
-        return slowEquals(password, pw);
+        if(slowEquals(password, pw)){
+            firstName = results.getString("FIRST_NAME");
+            lastName = results.getString("LAST_NAME");
+            return true;
+        }
+        return false;
     }
     
-    public void setName() throws SQLException{
-      // Connects to the database to display Newsfeed       
-        Connection con = DriverManager.getConnection(HOST, USER, PASS);
-    
-        //prepare SQL statement
-        String sql = "SELECT FIRST_NAME,LAST_NAME,USERNAME FROM USERS";
-        PreparedStatement s = con.prepareStatement(sql);
-
-        //set up PreparedStatements
-        ResultSet rs = s.executeQuery();
-        while(rs.next()) {
-            String un = rs.getString("USERNAME");
-            if(un.equals(username)){
-                //Catches string from database and displays it on newsfeed
-                firstName = rs.getString("FIRST_NAME");
-                //messageField.setFont(new Font("Helvetica", Font.PLAIN, 18));
-                lastName = rs.getString("LAST_NAME");
-                //messageField.append(str1+"\n"+str3 +"\n"+ str2+ "\n\n");  
-            } else {
-                firstName = "Guest";
-                lastName = "User";
-                      
-            }                  
-        }
+    public void setName(String fn, String ln) throws SQLException{
+      
     }
     /**
      * Post a public message.
      * @param message the message
+     * @param timestamp the timestamp
      */
     void post(String message)throws SQLException {
         
@@ -137,12 +122,11 @@ public class User {
         //post a public message
         try{
             Connection connection = DriverManager.getConnection(HOST, USER, PASS);
-            String sql = "INSERT INTO NEWSFEED (USER_NAME, MESSAGE, PRIVATE, TIMESTAMP) " + "VALUES (?, ?, ?, ?)";
+            String sql = "INSERT INTO NEWSFEED (USER_NAME, MESSAGE, TIMESTAMP) " + "VALUES (?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, username);
             statement.setString(2, message);
-            statement.setBoolean(3, false);
-            statement.setTimestamp(4, getCurrentTimeStamp());
+            statement.setTimestamp(3, getCurrentTimeStamp());
             statement.execute();
         } catch (SQLException e) {
             System.out.println("connection failed");
