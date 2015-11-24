@@ -1,14 +1,11 @@
 package messenger;
 
-import java.awt.Font;
 import java.sql.*;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 
 /**
- *
+ * Stores information and methods to allow a User to interact with a database.
  * @author Me
  */
 public class User {
@@ -16,6 +13,7 @@ public class User {
     private String lastName;
     private final String username;
     private char[] password;
+    private ArrayList<String> subscriptionList;
     
     //Change these to host url, database username and password
     private final String HOST = "jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull";
@@ -23,7 +21,7 @@ public class User {
     private final String PASS = "User1945";
     
    private Newsfeed newsfeed;       //the user's personal newsfeed
-    
+   
     /**
      * Constructor for a new User.
      * @param fn first name
@@ -49,22 +47,11 @@ public class User {
         firstName = null;
         lastName = null;
     }
-    public String getUsername(){
-        return username;
-    }
-    
-    public String getFirstName(){
-        return firstName;
-    }
-    
-    public String getLastName(){
-        return lastName;
-    }
     /**
      * Attempts to validate the user in the database with a given password
      * @param pw the password to test
      * @return -1 if the credentials are wrong, 1 if the credentials match, or 0 if the connection fails
-     * @throws SQLException if the connection could not be established
+     * @throws SQLException if the connection cannot be established.
      */
     public boolean validate(char[] pw) throws SQLException{
         
@@ -87,75 +74,12 @@ public class User {
         if(slowEquals(password, pw)){
             firstName = results.getString("FIRST_NAME");
             lastName = results.getString("LAST_NAME");
+            //populate the subscriptionList
             return true;
         }
         return false;
     }
-    
-    public void setName(String fn, String ln) throws SQLException{
-      
-    }
-    /**
-     * Post a public message.
-     * @param message the message
-     * @param timestamp the timestamp
-     */
-    void post(String message)throws SQLException {
-        
-        //Parser that will go through the message looking for the @ symbol
-        //in the message and if it finds @ with a username, send a message.
-        // if not, it will post publically automatically.
-        for(int i=0; i < message.length(); i++)
-        {
-            char current = message.charAt(i);
-           
-            if(current == '@')
-            {
-                System.out.println("I found an @ symbol!");
-            }
-            
-            else if(current == '#')
-            {
-                System.out.println("I found a #!");
-            }   
-        }
-        //post a public message
-        try{
-            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
-            String sql = "INSERT INTO NEWSFEED (USER_NAME, MESSAGE, TIMESTAMP) " + "VALUES (?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, message);
-            statement.setTimestamp(3, getCurrentTimeStamp());
-            statement.execute();
-        } catch (SQLException e) {
-            System.out.println("connection failed");
-        }
-    }
-    /**
-     * Send a private message to another user.
-     * @param message the message
-     * @param recipient username of the recipient.
-     */
-    void sendMessage(String message, String recipient){
-        //send a private message
-        try{
-            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
-            String sql = "INSERT INTO PRIVATE_MESSAGES (SENDER, RECIPIENT, MESSAGE, TIMESTAMP) " + "VALUES (?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, recipient);
-            statement.setString(3, message);
-            statement.setTimestamp(4, getCurrentTimeStamp());
-            statement.execute();
-        } catch (SQLException e) {
-            System.out.println("connection failed");
-        }
-    }
-
-    
-    
-    /**
+        /**
      * Registers a user by adding it to the database
      * @return a message indicating the result of the attempted registration.
      */
@@ -186,6 +110,13 @@ public class User {
                     
                 //execute statement
                 statement.execute();
+                
+                //make a column in the subscriptions table
+                sql = "ALTER TABLE SUBSCRIPTIONS ADD (?), VARCHAR(20)";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, username);
+                statement.execute();
+                
                 return "Registration successful!";
                 } else {
                     return "That username is already in use.";
@@ -194,15 +125,130 @@ public class User {
                 System.out.println( ex.getMessage( ) );
                 return( ex.getMessage());
         }
+    } 
+    /**
+     * Post a public message.
+     * @param post the message to be posted to the newsfeed
+     * @param p whether the post is private or not
+     */
+    void post(String post, boolean p)throws SQLException {
+        
+        //Parser that will go through the message looking for the @ symbol
+        //in the message and if it finds @ with a username, send a message.
+        // if not, it will post publically automatically.
+        for(int i=0; i < post.length(); i++)
+        {
+            char current = post.charAt(i);
+           
+            if(current == '@')
+            {
+                System.out.println("I found an @ symbol!");
+                //TODO: SEND THE POST AS A PRIVATE MESSAGE AND RETURN IMMEDIATELY
+            }   
+            else if(current == '#')
+            {
+                System.out.println("I found a #!");
+                //TODO: SEND A COPY OF THE POST TO THE HASHTAG TABLE, THEN POST TO NEWSFEED
+            }   
+        }
+        //post a public message
+        try{
+            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+            String sql = "INSERT INTO NEWSFEED (USER_NAME, MESSAGE, TIMESTAMP, PRIVATE) " + "VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, post);
+            statement.setTimestamp(3, getCurrentTimeStamp());
+            statement.setBoolean(4, p);
+            statement.execute();
+        } catch (SQLException e) {
+            System.out.println("connection failed");
+        }
+    }
+    /**
+     * Send a private message to another user.
+     * @param message the message
+     * @param recipient username of the recipient.
+     */
+    void sendMessage(String message, String recipient){
+        try{
+            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+            String sql = "INSERT INTO PRIVATE_MESSAGES (SENDER, RECIPIENT, MESSAGE, TIMESTAMP) " + "VALUES (?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, recipient);
+            statement.setString(3, message);
+            statement.setTimestamp(4, getCurrentTimeStamp());
+            statement.execute();
+        } catch (SQLException e) {
+            System.out.println("connection failed");
+        }
+    }
+    public String getUsername(){
+        return username;
     }
     
+    public String getFirstName(){
+        return firstName;
+    }
     
+    public String getLastName(){
+        return lastName;
+    }
     /**
      * Change the password.
      * @param pw the new password
      */
     public void changePassword(char[] pw){
         password = pw;
+    }
+    /**
+     * Subscribe to a user's messages.
+     * @param un the username of the user to subscribe to
+     */
+    void subsribe(String un) throws SQLException{
+        Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+        String sql = "INSERT INTO SUBSCRIPTIONS " + username + " VALUE (?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, un);
+        statement.execute();
+    }
+    /**
+     * Unsubscribe from a user.
+     * @param un the username of the user to unsubscribe from
+     */
+    void unsubscribe(String un) throws SQLException{
+        Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+        String sql = "ALTER TABLE SUBSCRIPTIONS SET " + username + " = NULL WHERE " + " USERNAME = (?)";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        statement.setString(1, un);
+        statement.execute();
+    }
+    /**
+     * Get the personal newsfeed for this user, including all messages from subscriptions.
+     * @return 
+     */
+    ResultSet getPersonalFeed() throws SQLException{
+        ArrayList<String> subscriptionList = new ArrayList();
+        Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+        
+        //get subscriptions
+        String sql = "SELECT (?) FROM SUBSCRIPTIONS";
+        PreparedStatement s = connection.prepareStatement(sql);
+        s.setString(1, username);
+        ResultSet subscriptionSet = s.executeQuery();
+        subscriptionSet.next();
+        
+        sql = "SELECT * FROM NEWSFEED WHERE PRIVATE = FALSE OR USER_NAME IN (?)";
+        String names = username + ", ";
+        while(subscriptionSet.isLast()){
+            names = names + subscriptionSet.next() + ", ";
+        }
+        
+        s = connection.prepareStatement(sql);
+        s.setString(1, names);
+        ResultSet rs = s.executeQuery();
+        return rs;
     }
     /**
      * Make a timestamp for the current time.
@@ -228,5 +274,3 @@ public class User {
          return diff == 0;
     }
 }
-
-//User
