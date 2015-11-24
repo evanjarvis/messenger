@@ -85,6 +85,7 @@ public class GUI extends JFrame {
                     }
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(loginPane, "Connection not found.  Please check your network connection.");
+                    showStartupFrame();
                 }
             }
         });

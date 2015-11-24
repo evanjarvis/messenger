@@ -9,15 +9,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.border.EmptyBorder;
 /**
  *
  * @author Me
@@ -42,41 +38,11 @@ public class Session extends JFrame{
         localUser = user;
         guestSession = false;
     }
-    
-    void loopFeed() throws SQLException{
-    String HOST = "jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull";
-    String USER = "evanjarv_project";
-    String PASS = "User1945";
-    
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    Connection con = DriverManager.getConnection(HOST, USER, PASS);
-    
-    //prepare SQL statement
-    String sql = "SELECT MESSAGE FROM NEWSFEED";
-    PreparedStatement s = con.prepareStatement(sql);
-    
-
-    //set up PreparedStatements
-    ResultSet rs = s.executeQuery();
-    while(rs.next()) {  
-        
-        String str1 = rs.getString("MESSAGE");
-        //System.out.println(str1);    
-        }
-    }
-    
-
     /**
      * Create and display the main frame for the messenger program.
+     * @throws java.sql.SQLException
      */
     protected void showMessageGUI() throws SQLException{
-        // Reads Image From File
-        loopFeed();
-        
         setLayout(new BorderLayout());
 	JLabel background=new JLabel(new ImageIcon("build/images/BTBPoly.jpg"));
        
@@ -90,12 +56,10 @@ public class Session extends JFrame{
         
         messageField.setEditable(false);
         JScrollPane scroller = new JScrollPane(messageField,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
- 
-        
+     
         JButton sendButton = new JButton("Send");
         JButton backButton = new JButton("Back");
- 
-                
+    
         sendButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
@@ -106,7 +70,7 @@ public class Session extends JFrame{
                 Timestamp currentTimestamp = new java.sql.Timestamp(calendar.getTime().getTime());
                 try { 
                     //send the message to database
-                    localUser.post(message);
+                    localUser.post(message, false);
                 } catch (SQLException ex) {
                     //Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
                     System.out.println("Didn't work");
@@ -214,8 +178,10 @@ public class Session extends JFrame{
         
                         
         // Sets the Post button and entry field on the bottom Panel
-        JButton post = new JButton("Post");
-        bottomPanel.add(post, BorderLayout.WEST);
+        JButton postPublic = new JButton("Public Post");
+        JButton postPrivate = new JButton("Send to Subscribers");
+        bottomPanel.add(postPublic, BorderLayout.WEST);
+        bottomPanel.add(postPrivate, BorderLayout.EAST);
         bottomPanel.add(entryField, BorderLayout.WEST);     
         
         // Sets the Search button and entryfield on the top Panel
@@ -229,16 +195,9 @@ public class Session extends JFrame{
         
         sidePanel.setLayout(new GridLayout(0,1,400,650));
         sidePanel.add(logout);
-        
-        // Connects to the database to display Newsfeed       
-        Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull", "evanjarv_project", "User1945");
-    
-        //prepare SQL statement
-        String sql = "SELECT USER_NAME,MESSAGE,TIMESTAMP FROM NEWSFEED";
-        PreparedStatement s = con.prepareStatement(sql);
-    
-        //set up PreparedStatements
-        ResultSet rs = s.executeQuery();
+
+        //get the newsfeed
+        ResultSet rs = localUser.getPersonalFeed();
         while(rs.next()) {
             //Catches string from database and displays it on newsfeed
             String str1 = rs.getString("USER_NAME");
@@ -247,18 +206,17 @@ public class Session extends JFrame{
             Timestamp str3 = rs.getTimestamp("TIMESTAMP");           
             messageField.append(str1+"\n"+"On: "+str3 +"\n"+ str2+ "\n\n");                    
         }
-    
+        
        // Adds a post to the message field
-        post.addActionListener(new ActionListener(){
+        postPublic.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
                 Date date = new Date();
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                 String formattedDate = sdf.format(date);
-                //System.out.println(formattedDate); // 12/01/2011 4:48:16 PM
                 message = entryField.getText();                
                 try {
-                    localUser.post(message);
+                    localUser.post(message, false);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(centerPanel, "The connection failed.");
                 }
@@ -266,8 +224,22 @@ public class Session extends JFrame{
                 entryField.setText("");
            }
         });
-        
-        
+        postPrivate.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                String formattedDate = sdf.format(date);
+                message = entryField.getText();                
+                try {
+                    localUser.post(message, true);
+                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(centerPanel, "The connection failed.");
+                }
+                messageField.append(localUser.getUsername()+"\n"+formattedDate+"\n"+message+ "\n\n"); 
+                entryField.setText("");
+           }
+        });
         logout.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){                 
@@ -311,10 +283,11 @@ public class Session extends JFrame{
         group.addUser(u);
     }
     /**
-     * Save information about a session including members and recent messages.
+     * Check to see whether the session has Guest privileges
+     * @return true if the session is a guest session, otherwise false
      */
-    void saveSession(){ 
-        
+    boolean getGuest(){ 
+        return guestSession;
     }  
 }
 

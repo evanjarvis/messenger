@@ -9,8 +9,6 @@ import javax.swing.*;
 public class Newsfeed extends JFrame {
     User user;
     private ArrayList<String> subscriptionArray;    //the usernames of subscribed-to users
-    
-
     /**
      * Subscribe to another user.  Takes the provided username and adds it to the list of
      * usernames subscribed to.
