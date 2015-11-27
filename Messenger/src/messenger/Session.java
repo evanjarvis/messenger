@@ -157,8 +157,8 @@ public class Session extends JFrame{
         }
         else {
              messageField2.append("Welcome, " + localUser.getFirstName()+ " " + localUser.getLastName()+"!");
-             bioIn = localUser.pullBioInfo();
-             messageField2.append("\n\n"+bioIn);
+             String bio = localUser.pullBioInfo();
+             messageField2.append("\n\n"+bio);
         }
         
         // Buttons
@@ -181,7 +181,8 @@ public class Session extends JFrame{
         sidePanel.setBackground(new Color(0xB8D1F1));
         topPanel.setBackground(new Color(0x73D3FC));
         bottomPanel.setBackground(new Color(0x73D3FC));
-
+        innerTopBio.setBackground(new Color(0x73D3FC));
+        
         // Sets dimensions of the Side Panel and Center Panel
         sidePanel.setPreferredSize(new Dimension(200, 100));
         centerPanel.setPreferredSize(new Dimension(500, 800));

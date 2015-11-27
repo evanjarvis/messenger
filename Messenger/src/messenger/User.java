@@ -12,7 +12,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String username;
-    private String bioInfo;
+    public String bioInfo;
     
     private char[] password;
     private ArrayList<String> subscriptionList;
@@ -331,6 +331,7 @@ public class User {
      * @return returns the user's bio info
      */
     public String pullBioInfo(){
+        
         try{
             Connection connection = DriverManager.getConnection(HOST, USER, PASS);
             String sql = "Select USER_NAME,BIO FROM USERINFO";
@@ -347,10 +348,7 @@ public class User {
                     System.out.println("Test 5");
                     bioInfo = rs.getString("BIO");
                     System.out.println(bioInfo);
-                }
-                else
-                    bioInfo = "";
-            
+                }        
             }
             
         }
