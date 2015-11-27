@@ -176,12 +176,7 @@ public class Session extends JFrame{
         //editBio.setLayout(new GridLayout(1,3,200,0));
         //logout.setLayout(new GridLayout(0,10,400,650));
         centerPanel.setLayout(new BorderLayout());
-        
-        
-        
-        
-        
-        
+   
         // Changes colors of the panels
         sidePanel.setBackground(new Color(0xB8D1F1));
         topPanel.setBackground(new Color(0x73D3FC));
@@ -205,17 +200,13 @@ public class Session extends JFrame{
         JScrollPane scroller2 = new JScrollPane(messageField2,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         messageField2.setFont(new Font("Helvetica", Font.PLAIN, 18));
         innerTopBio.add(scroller2, BorderLayout.CENTER);
-        
-        
-        
-        
+
         // Wraps the text so it doesn't go out of bounds
         messageField.setLineWrap(true);
         messageField2.setLineWrap(true);
         messageField.setWrapStyleWord(true);
         messageField2.setWrapStyleWord(true);
-        
-                        
+            
         // Sets the Post button and entry field on the bottom Panel
         bottomPanel.add(postPublic, BorderLayout.WEST);
         bottomPanel.add(postPrivate, BorderLayout.CENTER);
@@ -285,20 +276,30 @@ public class Session extends JFrame{
                 gui.showStartupFrame();              
             }
         });   
-        
-        
         // Will search for friends or Trends 
         search.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
                 try{
                     String search = entryField2.getText();
-                    Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull");
-                    //ps = con.prepareStatement("select * from where users id ?");
-                    //rs = ps.executeQuery();
-                    
+                        System.out.println("Entered try block");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull", "evanjarv_project", "User1945");
+                        System.out.println("Got connection");
+                    PreparedStatement ps = con.prepareStatement("SELECT * FROM NEWSFEED WHERE USER_NAME = (?)");
+                        System.out.println("Prepared statement");
+                    ps.setString(1, search);
+                    System.out.println(ps);
+                    ResultSet rs = ps.executeQuery();
+                    System.out.println("Search executed");
+                    while(rs.next()){
+                        messageField.append("***** SEARCH RESULT ***** \n" +
+                                rs.getString("USER_NAME")+ "\n" +
+                                rs.getString("TIMESTAMP") + "\n" +
+                                rs.getString("MESSAGE") + "\n \n");
+                    }
                 }
                 catch(Exception e){
+                    System.out.println("Exception thrown");
                 }    
             }
         });    
@@ -324,9 +325,7 @@ public class Session extends JFrame{
         frame.pack();
         frame.setResizable(true);
         frame.setVisible(true);
-    }
-        
-        
+    } 
     /**
      * Add a user to the session so they can read messages.
      * @param u the user to be added
@@ -341,8 +340,6 @@ public class Session extends JFrame{
     boolean getGuest(){ 
         return guestSession;
     }  
-    
-    
     public void bioInfo(){
         int LABEL_WIDTH = 10;
         int TEXT_FIELD_WIDTH = 20;
