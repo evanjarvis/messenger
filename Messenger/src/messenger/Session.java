@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.text.StyledDocument;
 /**
  *
  * @author Me
@@ -23,6 +24,8 @@ public class Session extends JFrame{
     private final boolean guestSession;
     User localUser;
     public String message;
+    public String bioIn;
+    final JTextArea messageField2 = new JTextArea(200,20); 
 
     /**
      * Default constructor starts a session with guest privileges.
@@ -88,6 +91,8 @@ public class Session extends JFrame{
                 }
             }
         });
+        
+        
 
         
         // Add image to background
@@ -95,16 +100,12 @@ public class Session extends JFrame{
 	background.setLayout(new FlowLayout());
         
         topPanel1.add(backButton, BorderLayout.NORTH);
-        topPanel1.setLayout(new BorderLayout());
-
-        
+        topPanel1.setLayout(new BorderLayout());        
         
         topPanel2.setLayout(new BorderLayout());
         topPanel2.add(new JLabel("Messages:"), BorderLayout.NORTH);
         topPanel2.add(messageField, BorderLayout.CENTER);
-        topPanel2.setBackground(new Color(0xA7B23C));
-        
-
+        topPanel2.setBackground(new Color(0xA7B23C));        
         
         //bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         bottomPanel.setLayout(new BorderLayout());
@@ -137,24 +138,50 @@ public class Session extends JFrame{
         setLayout(new BorderLayout());
         final JLabel background = new JLabel(new ImageIcon("build/Images/BTBPoly.jpg"));
         final int TEXT_FIELD_WIDTH = 20;
-        
-       final JFrame frame = new JFrame("BTB NewsFeed");
+        final JFrame frame = new JFrame("BTB NewsFeed");
         
         // Sets the panels for the window
         final JPanel topPanel = new JPanel();
         final JPanel centerPanel = new JPanel();
         final JPanel sidePanel = new JPanel();
         final JPanel bottomPanel = new JPanel();
-        final JTextArea messageField = new JTextArea(100, 50);     
+        final JPanel innerTopBio = new JPanel();
+        final JPanel innerBio = new JPanel();
+        final JTextArea messageField = new JTextArea();   
         final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
         final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
+                
         
         if(localUser.getUsername().equals("guest")){
-            sidePanel.add(new JLabel("Welcome, Guest"));
+            messageField2.append("Welcome, Guest");
         }
         else {
-            sidePanel.add(new JLabel("Welcome, " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"));
+             messageField2.append("Welcome, " + localUser.getFirstName()+ " " + localUser.getLastName()+"!");
+             bioIn = localUser.pullBioInfo();
+             messageField2.append("\n\n"+bioIn);
         }
+        
+        // Buttons
+        JButton editBio = new JButton("Edit Bio");
+        editBio.setSize(50,50);
+        JButton postPublic = new JButton("Public Post");
+        postPublic.setSize(50,50);
+        JButton postPrivate = new JButton("Private Post");
+        postPrivate.setSize(50,50);
+        JButton search = new JButton("Search");
+        search.setSize(50,50);
+        JButton logout = new JButton("Logout");
+        logout.setSize(50,50);
+        
+        //editBio.setLayout(new GridLayout(1,3,200,0));
+        //logout.setLayout(new GridLayout(0,10,400,650));
+        centerPanel.setLayout(new BorderLayout());
+        
+        
+        
+        
+        
+        
         // Changes colors of the panels
         sidePanel.setBackground(new Color(0xB8D1F1));
         topPanel.setBackground(new Color(0x73D3FC));
@@ -162,39 +189,49 @@ public class Session extends JFrame{
 
         // Sets dimensions of the Side Panel and Center Panel
         sidePanel.setPreferredSize(new Dimension(200, 100));
-        centerPanel.setPreferredSize(new Dimension(500, 700));
+        centerPanel.setPreferredSize(new Dimension(500, 800));
+        innerTopBio.setPreferredSize(new Dimension(700, 100));
         
         //bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        centerPanel.setLayout(new BorderLayout());
         
+                       
         // Establishes the messagefield for the Newsfeed... Obviously...
         messageField.setEditable(false);
+        messageField2.setEditable(false);
+        messageField.setVisible(true);
+        messageField2.setVisible(true);
         JScrollPane scroller = new JScrollPane(messageField,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         centerPanel.add(scroller, BorderLayout.CENTER);
+        JScrollPane scroller2 = new JScrollPane(messageField2,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        messageField2.setFont(new Font("Helvetica", Font.PLAIN, 18));
+        innerTopBio.add(scroller2, BorderLayout.CENTER);
+        
+        
+        
         
         // Wraps the text so it doesn't go out of bounds
         messageField.setLineWrap(true);
+        messageField2.setLineWrap(true);
         messageField.setWrapStyleWord(true);
+        messageField2.setWrapStyleWord(true);
         
                         
         // Sets the Post button and entry field on the bottom Panel
-        JButton postPublic = new JButton("Public Post");
-        JButton postPrivate = new JButton("Send to Subscribers");
         bottomPanel.add(postPublic, BorderLayout.WEST);
-        bottomPanel.add(postPrivate, BorderLayout.EAST);
-        bottomPanel.add(entryField, BorderLayout.WEST);     
+        bottomPanel.add(postPrivate, BorderLayout.CENTER);
+        bottomPanel.add(entryField, BorderLayout.EAST);     
         
         // Sets the Search button and entryfield on the top Panel
-        JButton search = new JButton("Search");
         topPanel.add(search, BorderLayout.WEST);
         topPanel.add(entryField2, BorderLayout.WEST);
         
-        // Sets the button to open message window
-        JButton logout = new JButton("Logout");
-        sidePanel.add(logout, BorderLayout.SOUTH);
         
-        sidePanel.setLayout(new GridLayout(0,1,400,650));
-        sidePanel.add(logout);
+        topPanel.add(editBio, BorderLayout.EAST);
+        topPanel.add(logout, BorderLayout.EAST);
+        
+        
+        
+        //sidePanel.add(logout);
 
         //get the newsfeed
         ResultSet rs = localUser.getPersonalFeed();
@@ -207,7 +244,7 @@ public class Session extends JFrame{
             messageField.append(str1+"\n"+"On: "+str3 +"\n"+ str2+ "\n\n");                    
         }
         
-       // Adds a post to the message field
+        // Adds a post to the message field
         postPublic.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
@@ -264,17 +301,32 @@ public class Session extends JFrame{
                 catch(Exception e){
                 }    
             }
-        });      
+        });    
+        
+        editBio.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                try{
+                    bioInfo();
+                }
+                catch(Exception e){
+                }    
+            }
+        }); 
+        
        // Draws the Panels
-        frame.add(sidePanel, BorderLayout.WEST);
+        centerPanel.add(sidePanel, BorderLayout.WEST);
         frame.add(centerPanel, BorderLayout.CENTER);
         centerPanel.add(topPanel, BorderLayout.NORTH);
         centerPanel.add(bottomPanel,BorderLayout.SOUTH);
+        frame.add(innerTopBio, BorderLayout.NORTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.setResizable(false);
+        frame.setResizable(true);
         frame.setVisible(true);
     }
+        
+        
     /**
      * Add a user to the session so they can read messages.
      * @param u the user to be added
@@ -289,6 +341,59 @@ public class Session extends JFrame{
     boolean getGuest(){ 
         return guestSession;
     }  
+    
+    
+    public void bioInfo(){
+        int LABEL_WIDTH = 10;
+        int TEXT_FIELD_WIDTH = 20;
+                
+        messageField2.setText("");
+        final JFrame registrationFrame = new JFrame("Bio Info");
+        final JPanel formPanel = new JPanel();
+        formPanel.setSize(100,100);
+        
+        //make the registration form
+        JLabel fn = new JLabel("Bio Info:");
+        final JTextField bioInfo = new JTextField(TEXT_FIELD_WIDTH);
+        fn.setLabelFor(bioInfo);
+        formPanel.add(fn); formPanel.add(bioInfo);
+        
+        
+        //make the signup button
+        JButton doneButton = new JButton("Done");
+        JButton cancelButton = new JButton("Cancel");
+        doneButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                messageField2.setText("");
+                String bioinfo = bioInfo.getText();
+                messageField2.append("Welcome, " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"+"\n\n"+bioinfo);
+                try {
+                    localUser.setBioInfo(bioinfo);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                registrationFrame.dispose();
+            }
+        }); 
+        
+        cancelButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                messageField2.append("Welcome, " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"+"\n\n"+bioIn);
+                registrationFrame.dispose();
+            }
+        }); 
+        
+        formPanel.add(doneButton);
+        formPanel.add(cancelButton);
+        registrationFrame.add(formPanel);
+        registrationFrame.setResizable(false);
+        registrationFrame.pack();
+        registrationFrame.setVisible(true);
+        
+
+    }
 }
 
 //Session

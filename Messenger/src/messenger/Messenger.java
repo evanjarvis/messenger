@@ -21,7 +21,7 @@ public class Messenger {
         //create window
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
-        Session session = new Session();
+        //Session session = new Session();
         
         //session.showMessageGUI();
         //User localUser = null;

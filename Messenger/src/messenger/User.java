@@ -11,7 +11,9 @@ import java.util.ArrayList;
 public class User {
     private String firstName;
     private String lastName;
-    private final String username;
+    private String username;
+    private String bioInfo;
+    
     private char[] password;
     private ArrayList<String> subscriptionList;
     
@@ -161,6 +163,7 @@ public class User {
             statement.setTimestamp(3, getCurrentTimeStamp());
             statement.setBoolean(4, p);
             statement.execute();
+            System.out.println("Great Success");
         } catch (SQLException e) {
             System.out.println("connection failed");
         }
@@ -184,14 +187,25 @@ public class User {
             System.out.println("connection failed");
         }
     }
+    /**
+     * gets the user's username
+     * @return username
+     */
     public String getUsername(){
         return username;
     }
-    
+    /**
+     * gets the user's firstname
+     * @return first name
+     */
     public String getFirstName(){
         return firstName;
     }
     
+    /**
+     * gets the user's last name
+     * @return last name
+     */
     public String getLastName(){
         return lastName;
     }
@@ -272,5 +286,77 @@ public class User {
              diff |= a[i] ^ b[i];
          }
          return diff == 0;
+    }
+    
+    /**
+     * Allows for setting the user's new bio info
+     * @param bioInfo is the new bio information updated by the user
+     * @throws SQLException if it cannot connect to the database
+     */
+    public void setBioInfo(String bioInfo) throws SQLException{
+        this.bioInfo = bioInfo;
+        System.out.println("User is: " +username+ " and bio info is: " + bioInfo);
+        try{
+            // Will attempt to connect to the database
+            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+            System.out.println("Connected database successfully...");
+      
+            System.out.println("Creating statement...");
+            
+            // This sql statement will delete the user's old Bio info
+            String SQL = "DELETE FROM USERINFO WHERE USER_NAME =?";
+            PreparedStatement stmt = connection.prepareStatement(SQL);
+            stmt.setString(1, username);
+            stmt.executeUpdate();
+            
+            System.out.println("Great Success!");
+            // This sql commant will insert the users new bio info
+            String sql = "INSERT INTO USERINFO (USER_NAME, BIO)" + " VALUES (?,?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, bioInfo);
+            statement.execute();
+            connection.close();
+        }
+        catch(Exception e){
+            System.out.println("Connection failed");
+        }
+        
+    }
+    
+    /**
+     * This method will return the user's
+     * bio info and display it once the user 
+     * is logged in
+     * @return returns the user's bio info
+     */
+    public String pullBioInfo(){
+        try{
+            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+            String sql = "Select USER_NAME,BIO FROM USERINFO";
+            
+            System.out.println("Test 1");
+            PreparedStatement statement = connection.prepareStatement(sql);
+            System.out.println("Test 2");
+            System.out.println("Test 3");
+            ResultSet rs = statement.executeQuery();
+            System.out.println("Test 4");
+            while(rs.next()){
+                String un = rs.getString("USER_NAME");
+                if(un.equals(username)){
+                    System.out.println("Test 5");
+                    bioInfo = rs.getString("BIO");
+                    System.out.println(bioInfo);
+                }
+                else
+                    bioInfo = "";
+            
+            }
+            
+        }
+        catch(Exception e){
+            System.out.println("Didnt work nigga");
+        }
+        return bioInfo;
     }
 }

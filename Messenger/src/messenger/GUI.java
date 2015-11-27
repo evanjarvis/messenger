@@ -107,7 +107,6 @@ public class GUI extends JFrame {
                 } catch (SQLException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
             }
         });     
        
