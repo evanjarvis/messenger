@@ -85,7 +85,37 @@ public class User {
      * Registers a user by adding it to the database
      * @return a message indicating the result of the attempted registration.
      */
-    String Register() throws SQLException{
+    void post(String message)throws SQLException {
+        
+        //post a public message
+        try{
+            Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+            String sql = "INSERT INTO MESSAGEUSER (USER_NAME, MESSAGE, PRIVATE) " + "VALUES (?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            statement.setString(2, message);
+            statement.setBoolean(3, true);
+            statement.execute();
+        } catch (SQLException e) {
+            System.out.println("connection failed");
+        }
+    }
+
+    void loopPrint() throws SQLException{
+    Connection con = DriverManager.getConnection(HOST, USER, PASS);
+    Statement sta = con.createStatement(); 
+      ResultSet res = sta.executeQuery("SELECT FROM USER.FIRST_NAME");
+      System.out.println("Customers");
+      while (res.next()) {
+        String firstName = res.getString("FIRST_NAME");
+        //String lastName = res.getString("LastName");
+        System.out.println("   "+firstName);
+      }}
+    /**
+     * Registers a user by adding it to the database.
+     */
+    void Register() throws SQLException{
+        
         try {
             //establish connection
             Connection connection = DriverManager.getConnection(HOST, USER, PASS);
@@ -118,14 +148,10 @@ public class User {
                 statement = connection.prepareStatement(sql);
                 statement.setString(1, username);
                 statement.execute();
-                
-                return "Registration successful!";
-                } else {
-                    return "That username is already in use.";
-                }
+                System.out.println("Registration successful for " + username);
+            }
         } catch (SQLException ex) {
                 System.out.println( ex.getMessage( ) );
-                return( ex.getMessage());
         }
     } 
     /**

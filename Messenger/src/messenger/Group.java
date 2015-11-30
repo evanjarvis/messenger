@@ -8,6 +8,7 @@ import java.util.ArrayList;
  */
 public class Group {
     private ArrayList userList;
+    //Adding new code to push
     /**
      * Add a user to the group.
      * @param user the user to be added
