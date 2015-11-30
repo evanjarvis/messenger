@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.text.StyledDocument;
 /**
  *
  * @author Me
@@ -68,9 +67,10 @@ public class Session extends JFrame{
         
         messageField.setEditable(false);
         JScrollPane scroller = new JScrollPane(messageField,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-     
-        JButton backButton = new JButton("Back");
-    
+        
+        messageField.setLineWrap(true);        
+        messageField.setWrapStyleWord(true);
+
        try{
             Connection connection = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull", "evanjarv_project", "User1945");
             String sql = "Select SENDER,RECIPIENT,MESSAGE FROM PRIVATE_MESSAGES";
@@ -88,7 +88,7 @@ public class Session extends JFrame{
                     System.out.println("Test 5");
                     String message = rs.getString("MESSAGE");
                     String sender = rs.getString("SENDER");
-                    messageField.append("From: "+sender+" "+message+"\n");
+                    messageField.append("From: "+sender+" "+message+"\n\n");
                 }        
             }
             
@@ -101,12 +101,12 @@ public class Session extends JFrame{
         topPanel1.add(background);
 	background.setLayout(new FlowLayout());
         
-        topPanel1.add(backButton, BorderLayout.NORTH);
+        
         topPanel1.setLayout(new BorderLayout());        
         
         topPanel2.setLayout(new BorderLayout());
         topPanel2.add(new JLabel("Messages:"), BorderLayout.NORTH);
-        topPanel2.add(messageField, BorderLayout.CENTER);
+        topPanel2.add(scroller, BorderLayout.CENTER);
         topPanel2.setBackground(new Color(0xA7B23C));        
         
         
@@ -130,7 +130,6 @@ public class Session extends JFrame{
         protected void showNewsfeedGUI() throws SQLException {
        // Reads Image From File
         setLayout(new BorderLayout());
-        final JLabel background = new JLabel(new ImageIcon("build/Images/BTBPoly.jpg"));
         final int TEXT_FIELD_WIDTH = 20;
         final JFrame frame = new JFrame("BTB NewsFeed");
         
@@ -145,7 +144,7 @@ public class Session extends JFrame{
         final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
         final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
                 
-        
+        // Conditional statement to determine if user is a guest
         if(localUser.getUsername().equals("guest")){
             messageField2.append("Welcome, Guest");
         }
@@ -169,8 +168,6 @@ public class Session extends JFrame{
         JButton messages = new JButton("Message");
         logout.setSize(50,50);
         
-        //editBio.setLayout(new GridLayout(1,3,200,0));
-        //logout.setLayout(new GridLayout(0,10,400,650));
         centerPanel.setLayout(new BorderLayout());
    
         // Changes colors of the panels
@@ -183,8 +180,6 @@ public class Session extends JFrame{
         sidePanel.setPreferredSize(new Dimension(200, 100));
         centerPanel.setPreferredSize(new Dimension(500, 800));
         innerTopBio.setPreferredSize(new Dimension(700, 100));
-        
-        //bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
                        
         // Establishes the messagefield for the Newsfeed... Obviously...
@@ -211,12 +206,8 @@ public class Session extends JFrame{
         
         sidePanel.add(messages);
         
-        // Sets the Search button and entryfield on the top Panel
         topPanel.add(search, BorderLayout.WEST);
-        
         topPanel.add(entryField2, BorderLayout.WEST);
-        
-        
         topPanel.add(editBio, BorderLayout.EAST);
         topPanel.add(logout, BorderLayout.EAST);
         
@@ -347,6 +338,130 @@ public class Session extends JFrame{
         frame.setResizable(true);
         frame.setVisible(true);
     } 
+        protected void showGuestNewsfeedGUI() throws SQLException {
+       // Reads Image From File
+        setLayout(new BorderLayout());
+        final int TEXT_FIELD_WIDTH = 20;
+        final JFrame frame = new JFrame("BTB NewsFeed");
+        
+        // Sets the panels for the window
+        final JPanel topPanel = new JPanel();
+        final JPanel centerPanel = new JPanel();
+        final JPanel sidePanel = new JPanel();
+        final JPanel bottomPanel = new JPanel();
+        final JPanel innerTopBio = new JPanel();
+        final JPanel innerBio = new JPanel();
+        final JTextArea messageField = new JTextArea();   
+        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
+        final JTextField entryField2 = new JTextField(TEXT_FIELD_WIDTH);
+                      
+        // appends message for welcoming user
+        messageField2.append("Welcome, Guest \n Sign in to send edit bio");
+            
+        // Buttons
+        JButton search = new JButton("Search");
+        search.setSize(50,50);
+        JButton logout = new JButton("Logout");
+        logout.setSize(50,50);
+        
+        centerPanel.setLayout(new BorderLayout());
+   
+        // Changes colors of the panels
+        sidePanel.setBackground(new Color(0xB8D1F1));
+        topPanel.setBackground(new Color(0x73D3FC));
+        bottomPanel.setBackground(new Color(0x73D3FC));
+        innerTopBio.setBackground(new Color(0x73D3FC));
+        
+        // Sets dimensions of the Side Panel and Center Panel
+        sidePanel.setPreferredSize(new Dimension(200, 100));
+        centerPanel.setPreferredSize(new Dimension(500, 800));
+        innerTopBio.setPreferredSize(new Dimension(700, 100));
+        
+                       
+        // Establishes the messagefield for the Newsfeed
+        messageField.setEditable(false);
+        messageField2.setEditable(false);
+        messageField.setVisible(true);
+        messageField2.setVisible(true);
+        JScrollPane scroller = new JScrollPane(messageField,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        centerPanel.add(scroller, BorderLayout.CENTER);
+        JScrollPane scroller2 = new JScrollPane(messageField2,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        messageField2.setFont(new Font("Helvetica", Font.PLAIN, 18));
+        innerTopBio.add(scroller2, BorderLayout.CENTER);
+
+        // Wraps the text so it doesn't go out of bounds
+        messageField.setLineWrap(true);
+        messageField2.setLineWrap(true);
+        messageField.setWrapStyleWord(true);
+        messageField2.setWrapStyleWord(true);
+            
+        topPanel.add(search, BorderLayout.WEST);        
+        topPanel.add(entryField2, BorderLayout.WEST);
+        topPanel.add(logout, BorderLayout.EAST);
+        
+        
+       
+
+        //get the newsfeed
+        ResultSet rs = localUser.getPersonalFeed();
+        while(rs.next()) {
+            //Catches string from database and displays it on newsfeed
+            String str1 = rs.getString("USER_NAME");
+            messageField.setFont(new Font("Helvetica", Font.PLAIN, 18));
+            String str2 = rs.getString("MESSAGE"); 
+            Timestamp str3 = rs.getTimestamp("TIMESTAMP");           
+            messageField.append(str1+"\n"+"On: "+str3 +"\n"+ str2+ "\n\n");                    
+        }
+        
+        
+        logout.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){                 
+                GUI gui = new GUI();
+                frame.dispose();
+                gui.showStartupFrame();              
+            }
+        });   
+        
+        
+        // Will search for friends or Trends 
+        search.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                try{
+                    String search = entryField2.getText();
+                        System.out.println("Entered try block");
+                    Connection con = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull", "evanjarv_project", "User1945");
+                        System.out.println("Got connection");
+                    PreparedStatement ps = con.prepareStatement("SELECT * FROM NEWSFEED WHERE USER_NAME = (?)");
+                        System.out.println("Prepared statement");
+                    ps.setString(1, search);
+                    System.out.println(ps);
+                    ResultSet rs = ps.executeQuery();
+                    System.out.println("Search executed");
+                    while(rs.next()){
+                        messageField.append("***** SEARCH RESULT ***** \n" +
+                                rs.getString("USER_NAME")+ "\n" +
+                                rs.getString("TIMESTAMP") + "\n" +
+                                rs.getString("MESSAGE") + "\n \n");
+                    }
+                }
+                catch(Exception e){
+                    System.out.println("Exception thrown");
+                }    
+            }
+        });    
+        // Draws the Panels
+        centerPanel.add(sidePanel, BorderLayout.WEST);
+        frame.add(centerPanel, BorderLayout.CENTER);
+        centerPanel.add(topPanel, BorderLayout.NORTH);
+        centerPanel.add(bottomPanel,BorderLayout.SOUTH);
+        frame.add(innerTopBio, BorderLayout.NORTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setResizable(true);
+        frame.setVisible(true);
+    }
     /**
      * Add a user to the session so they can read messages.
      * @param u the user to be added
@@ -413,5 +528,3 @@ public class Session extends JFrame{
 
     }
 }
-
-//Session

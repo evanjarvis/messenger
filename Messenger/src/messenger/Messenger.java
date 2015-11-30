@@ -21,8 +21,6 @@ public class Messenger {
         //create window
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
-        
-        //Adding new code to push
     }
     
 }

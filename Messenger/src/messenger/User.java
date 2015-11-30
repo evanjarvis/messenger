@@ -12,7 +12,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String username;
-    public String bioInfo;
+    public String bioInfo="";
     
     private char[] password;
     private ArrayList<String> subscriptionList;
@@ -232,6 +232,7 @@ public class User {
     public String getUsername(){
         return username;
     }
+    
     /**
      * gets the user's firstname
      * @return first name

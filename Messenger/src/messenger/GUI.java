@@ -26,25 +26,15 @@ public class GUI extends JFrame {
         
         //setup containers
         JPanel container = new JPanel(new BorderLayout());
-
         JPanel loginWrapper = new JPanel();
         JPanel innerLoginPane = new JPanel(new GridLayout(0, 2, 5, 0));
         final JPanel loginPane = new JPanel(new BorderLayout());
+        
         loginWrapper.setMaximumSize(new Dimension(100, 5));
-        //setLayout(new BorderLayout());
-	
         ImageIcon image = new ImageIcon("images/BTBMain.jpg");
         final JPanel topPanel = new JPanel(new BorderLayout());
         final JPanel bottomPanel = new JPanel(new BorderLayout());
         topPanel.add(new JLabel(image));
-	//background.setLayout(new FlowLayout());
-        
-        
-       
-        //loginPane.setBorder(new BevelBorder(BevelBorder.RAISED));
-        
-        //loginWrapper.setMaximumSize(new Dimension(10, 10));
-        //bottomPane.setBorder(new EmptyBorder(10, 10, 10, 10));
         
         // Set color Background
         loginWrapper.setBackground(new Color(0x03066C));
@@ -103,11 +93,9 @@ public class GUI extends JFrame {
                     User temp = new User("guest", null); //this is necessary so there is a user in the session
                     Session session = new Session(temp);
                 try {
-                    session.showNewsfeedGUI();
-                    localUser.setUserName();
-                    localUser.setBio();
-                    localUser.setName();
-                    localUser.setLastName();
+                    frame.dispose();
+                    session.showGuestNewsfeedGUI();
+                    
                 } catch (SQLException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -118,8 +106,7 @@ public class GUI extends JFrame {
         innerLoginPane.add(usernameLabel);
         innerLoginPane.add(usernameField);
         innerLoginPane.add(passwordLabel);
-        innerLoginPane.add(passwordField);                    
-        //loginPane.add(innerLoginPane, BorderLayout.NORTH);
+        innerLoginPane.add(passwordField);
         innerLoginPane.add(loginButton,BorderLayout.CENTER);
         innerLoginPane.add(registerButton, BorderLayout.WEST);
         innerLoginPane.add(guestButton, BorderLayout.EAST);
