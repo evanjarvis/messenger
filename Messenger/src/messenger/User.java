@@ -177,7 +177,16 @@ public class User {
             {
                 System.out.println("I found a #!");
                 //TODO: SEND A COPY OF THE POST TO THE HASHTAG TABLE, THEN POST TO NEWSFEED
-            }   
+                Connection connection = DriverManager.getConnection(HOST, USER, PASS);
+                String sql= "INSERT INTO HASHTAGS (USER, MESSAGE, TIME, PRIVATE)" + "VALUES (?,?,?, ?)";
+                PreparedStatement statement= connection.prepareStatement(sql);
+                statement.setString(1, username);
+                statement.setString(2, post);
+                statement.setTimestamp(3, getCurrentTimeStamp());
+                statement.setBoolean(4, p);
+                System.out.println(username + post + getCurrentTimeStamp().toString());
+                statement.execute();
+            }
         }
         //post a public message
         try{
