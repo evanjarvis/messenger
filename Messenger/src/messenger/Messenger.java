@@ -17,18 +17,10 @@ public class Messenger {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args){
         //create window
         GUI messengerGUI = new GUI();
         messengerGUI.showStartupFrame();
-        //Session session = new Session();
-        
-        //session.showMessageGUI();
-        //User localUser = null;
-        //localUser.loopPrint();
-        
-        //THIS IS THE TEST
-        //TESTING THE REBASE
     }
     
 }

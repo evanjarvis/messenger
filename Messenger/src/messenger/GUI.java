@@ -14,6 +14,7 @@ import javax.swing.border.*;
  * @author Me
  */
 public class GUI extends JFrame {
+    User localUser;
     /**
      * Show the startup screen.  Users may choose to login, register a new account, or continue as a guest.
      */
@@ -103,6 +104,10 @@ public class GUI extends JFrame {
                     Session session = new Session(temp);
                 try {
                     session.showNewsfeedGUI();
+                    localUser.setUserName();
+                    localUser.setBio();
+                    localUser.setName();
+                    localUser.setLastName();
                 } catch (SQLException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }

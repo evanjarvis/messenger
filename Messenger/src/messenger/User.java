@@ -191,6 +191,18 @@ public class User {
      * gets the user's username
      * @return username
      */
+    public void setUserName(){
+        username = "Guest";
+    }
+    public void setName(){
+        firstName = "Guest";
+    }
+    public void setLastName(){
+        lastName = "User";
+    }
+    public void setBio(){
+        bioInfo = "";
+    }
     public String getUsername(){
         return username;
     }
@@ -208,6 +220,10 @@ public class User {
      */
     public String getLastName(){
         return lastName;
+    }
+    
+    public String getBioInfo(){
+        return bioInfo;
     }
     /**
      * Change the password.

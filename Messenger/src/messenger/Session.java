@@ -378,7 +378,7 @@ public class Session extends JFrame{
         cancelButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent event){
-                messageField2.append("Welcome, " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"+"\n\n"+bioIn);
+                messageField2.append("Welcome, " + localUser.getFirstName()+ " " + localUser.getLastName()+"!"+"\n\n"+localUser.getBioInfo());
                 registrationFrame.dispose();
             }
         }); 
