@@ -49,51 +49,53 @@ public class Session extends JFrame{
         setLayout(new BorderLayout());
 	JLabel background=new JLabel(new ImageIcon("build/images/BTBPoly.jpg"));
        
+        
+        String frameTitle;
+        if(guestSession == true){
+            frameTitle = "Messenger App (Guest)";
+        } else {
+            frameTitle = "Messenger App";
+        }
+        
+        //localUser.pullMessages();
+        final JFrame frame = new JFrame(frameTitle);
         final int TEXT_FIELD_WIDTH = 25;   
         final JPanel topPanel1 = new JPanel();
         final JPanel topPanel2 = new JPanel();
         final JPanel bottomPanel = new JPanel();
-        final JTextField entryField = new JTextField(TEXT_FIELD_WIDTH);
         final JTextArea messageField = new JTextArea(10, 25);
         
         
         messageField.setEditable(false);
         JScrollPane scroller = new JScrollPane(messageField,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
      
-        JButton sendButton = new JButton("Send");
         JButton backButton = new JButton("Back");
     
-        sendButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent event){
-                String message = entryField.getText();
-                messageField.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                messageField.append(message+ "\n");
-                Calendar calendar = Calendar.getInstance();
-                Timestamp currentTimestamp = new java.sql.Timestamp(calendar.getTime().getTime());
-                try { 
-                    //send the message to database
-                    localUser.post(message, false);
-                } catch (SQLException ex) {
-                    //Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
-                    System.out.println("Didn't work");
-                }
+       try{
+            Connection connection = DriverManager.getConnection("jdbc:mysql://www.evanjarvis.net:3306/evanjarv_messenger?zeroDateTimeBehavior=convertToNull", "evanjarv_project", "User1945");
+            String sql = "Select SENDER,RECIPIENT,MESSAGE FROM PRIVATE_MESSAGES";
+            
+            System.out.println("Test 1");
+            PreparedStatement statement = connection.prepareStatement(sql);
+            System.out.println("Test 2");
+            System.out.println("Test 3");
+            ResultSet rs = statement.executeQuery();
+            System.out.println("Test 4");
+            String userName = localUser.getUsername();
+            while(rs.next()){
+                String un = rs.getString("RECIPIENT");
+                if(un.equals(userName)){
+                    System.out.println("Test 5");
+                    String message = rs.getString("MESSAGE");
+                    String sender = rs.getString("SENDER");
+                    messageField.append("From: "+sender+" "+message+"\n");
+                }        
             }
-        });
-        backButton.addActionListener(new ActionListener(){
-            @Override
-            public void actionPerformed(ActionEvent event){
-                try {
-                    showNewsfeedGUI();
-                    //showMessageGUI();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-        
-        
-
+            
+        }
+        catch(Exception e){
+            System.out.println("Connection Failed");
+        }
         
         // Add image to background
         topPanel1.add(background);
@@ -107,28 +109,20 @@ public class Session extends JFrame{
         topPanel2.add(messageField, BorderLayout.CENTER);
         topPanel2.setBackground(new Color(0xA7B23C));        
         
-        //bottomPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
         bottomPanel.setLayout(new BorderLayout());
-        bottomPanel.add(entryField, BorderLayout.CENTER);
-        bottomPanel.add(sendButton, BorderLayout.EAST);
         bottomPanel.setBackground(new Color(0x609EAA));
         
-        String frameTitle;
-        if(guestSession == true){
-            frameTitle = "Messenger App (Guest)";
-        } else {
-            frameTitle = "Messenger App";
-        }
         
         
         
-        JFrame frame = new JFrame(frameTitle);
         frame.add(topPanel1, BorderLayout.NORTH);
         frame.add(topPanel2, BorderLayout.NORTH);
         frame.add(scroller);
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.pack();
+        frame.setResizable(false);
         frame.setVisible(true);
         
        
@@ -172,6 +166,8 @@ public class Session extends JFrame{
         search.setSize(50,50);
         JButton logout = new JButton("Logout");
         logout.setSize(50,50);
+        JButton messages = new JButton("Message");
+        logout.setSize(50,50);
         
         //editBio.setLayout(new GridLayout(1,3,200,0));
         //logout.setLayout(new GridLayout(0,10,400,650));
@@ -213,8 +209,11 @@ public class Session extends JFrame{
         bottomPanel.add(postPrivate, BorderLayout.CENTER);
         bottomPanel.add(entryField, BorderLayout.EAST);     
         
+        sidePanel.add(messages);
+        
         // Sets the Search button and entryfield on the top Panel
         topPanel.add(search, BorderLayout.WEST);
+        
         topPanel.add(entryField2, BorderLayout.WEST);
         
         
@@ -235,6 +234,17 @@ public class Session extends JFrame{
             Timestamp str3 = rs.getTimestamp("TIMESTAMP");           
             messageField.append(str1+"\n"+"On: "+str3 +"\n"+ str2+ "\n\n");                    
         }
+        
+        messages.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent event){
+                try {
+                    showMessageGUI();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Session.class.getName()).log(Level.SEVERE, null, ex);
+                }
+           }
+        });
         
         // Adds a post to the message field
         postPublic.addActionListener(new ActionListener(){
@@ -259,9 +269,19 @@ public class Session extends JFrame{
                 Date date = new Date();
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
                 String formattedDate = sdf.format(date);
-                message = entryField.getText();                
+                
+                message = entryField.getText();   
+                String recipant = message;
+                
+                if(recipant.contains("@")){
+                    recipant = recipant.substring(1, recipant.indexOf(" "));  
+                }
+                
+                System.out.println("Still testing... "+recipant);
+                
                 try {
                     localUser.post(message, true);
+                    localUser.sendMessage(message,recipant);
                 } catch (SQLException ex) {
                     JOptionPane.showMessageDialog(centerPanel, "The connection failed.");
                 }

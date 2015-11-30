@@ -395,8 +395,9 @@ public class User {
             
         }
         catch(Exception e){
-            System.out.println("Didnt work nigga");
+            System.out.println("Connection Failed");
         }
         return bioInfo;
     }
+
 }
